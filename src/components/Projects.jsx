@@ -439,10 +439,10 @@ function CDCaseSchematic() {
   ];
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex w-full min-w-0 flex-col gap-6">
       <svg
         viewBox="0 0 314 280"
-        className="w-full max-w-sm self-center"
+        className="h-auto w-full max-w-sm self-center"
         role="img"
         aria-label="Front-view schematic of the 3 by 3 CD display case with overall dimensions 450 by 399 millimeters"
       >
@@ -489,7 +489,7 @@ function CDCaseSchematic() {
         </text>
       </svg>
 
-      <div className="overflow-x-auto rounded-[1rem] border border-steel bg-void p-5">
+      <div className="min-w-0 max-w-full overflow-x-auto rounded-[1rem] border border-steel bg-void p-5">
         <p className="mb-3 font-mono text-[0.6rem] tracking-widest text-muted">
           SOLIDWORKS GLOBAL VARIABLES — ACTUAL MODEL EQUATIONS
         </p>
@@ -791,7 +791,7 @@ export default function Projects() {
             >
               {/* Visual side */}
               <div
-                className={`relative min-h-[260px] ${
+                className={`relative min-h-[260px] min-w-0 ${
                   project.imageLeft ? "lg:order-1" : "lg:order-2"
                 }`}
               >
@@ -806,7 +806,7 @@ export default function Projects() {
 
               {/* Content side */}
               <div
-                className={`flex flex-col gap-5 p-8 sm:p-12 ${
+                className={`flex min-w-0 flex-col gap-5 p-8 sm:p-12 ${
                   project.imageLeft ? "lg:order-2" : "lg:order-1"
                 }`}
               >
@@ -861,7 +861,7 @@ export default function Projects() {
                     </a>
                   ))}
                 {project.media && project.extra && (
-                  <div className="py-2">{project.extra}</div>
+                  <div className="min-w-0 py-2">{project.extra}</div>
                 )}
                 <div className="mt-auto flex flex-wrap gap-2 pt-2">
                   {project.tags.map((tag) => (
