@@ -1,0 +1,16 @@
+﻿"Hole_Diameter"= 5mm
+"Hole_Depth"= 15mm
+"D1@Sketch1"="Hole_Diameter"
+"Wall_Thickness"= 10mm
+"Num_Pegs"= 4
+"D3@Sketch1"="Wall_Thickness"/2
+"Peg_Buffer"= "Wall_Thickness" + 20mm
+"D4@Sketch1"="Peg_Buffer"
+"D5@Sketch1"="Peg_Buffer"
+"D6@Sketch1"="Hole_Diameter"
+"D2@Sketch1"="Hole_Diameter"
+"Total_Height"= 399mm
+"Dist_Btwn_Pegs" = ( "Total_Height" - 2 * "Peg_Buffer" ) / ( "Num_Pegs" - 1 )
+"D7@Sketch1"="Dist_Btwn_Pegs"
+"D8@Sketch1"="Hole_Diameter"
+"D9@Sketch1"="Dist_Btwn_Pegs"

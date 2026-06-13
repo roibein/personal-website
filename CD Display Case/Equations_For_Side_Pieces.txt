@@ -1,0 +1,8 @@
+﻿"CD_Height"= 125mm
+"CD_Thickness"= 10mm
+"CD_Width"= 142mm
+"Wall_Thickness"= 10mm
+"Total_Height"= 3 * "CD_Height" + 2 * "Wall_Thickness" + 4mm
+"Total_Width"= "CD_Width" * 3 + "Wall_Thickness" * 2 + 4mm
+"Tolerance"= 1mm
+"Overhang_Width"= 10mm

@@ -1,0 +1,162 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --void: #09090f;
+  --iron: #1c1c26;
+  --steel: #2e2e3a;
+  --signal: #e8ff47;
+  --ghost: #f0eff4;
+  --muted: #7a7a8c;
+
+  /* RGB triplets so Tailwind alpha modifiers (e.g. bg-void/70) work */
+  --void-rgb: 9 9 15;
+  --iron-rgb: 28 28 38;
+  --steel-rgb: 46 46 58;
+  --signal-rgb: 232 255 71;
+  --ghost-rgb: 240 239 244;
+  --muted-rgb: 122 122 140;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--void);
+  color: var(--ghost);
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--signal);
+  color: var(--void);
+}
+
+/* ---------------------------------------------------------------- */
+/* Global noise overlay — SVG feTurbulence, fixed over entire page  */
+/* ---------------------------------------------------------------- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------- */
+/* Hero lidar scan-line sweep                                       */
+/* ---------------------------------------------------------------- */
+@keyframes scan-sweep {
+  0% {
+    top: 100%;
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.55;
+  }
+  92% {
+    opacity: 0.55;
+  }
+  100% {
+    top: -2%;
+    opacity: 0;
+  }
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    var(--signal) 35%,
+    var(--signal) 65%,
+    transparent 100%
+  );
+  box-shadow: 0 0 12px 1px rgba(232, 255, 71, 0.35);
+  animation: scan-sweep 9s linear infinite;
+  pointer-events: none;
+}
+
+/* ---------------------------------------------------------------- */
+/* Footer status pulse                                              */
+/* ---------------------------------------------------------------- */
+@keyframes status-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+  }
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #4ade80;
+  animation: status-pulse 2s ease-in-out infinite;
+}
+
+/* ---------------------------------------------------------------- */
+/* Interaction utilities                                            */
+/* ---------------------------------------------------------------- */
+.lift-link {
+  transition: transform 150ms ease, color 150ms ease;
+}
+.lift-link:hover {
+  transform: translateY(-1px);
+}
+
+.magnetic-btn {
+  transition: transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.magnetic-btn:hover {
+  transform: scale(1.03);
+}
+
+.skill-pill {
+  transition: transform 200ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 200ms ease, color 200ms ease;
+}
+.skill-pill:hover {
+  transform: scale(1.05);
+  border-color: var(--signal);
+  color: var(--signal);
+}
+
+.hover-card {
+  transition: transform 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 250ms ease;
+}
+.hover-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--signal);
+}
+
+.project-card {
+  transition: transform 250ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    border-color 250ms ease;
+}
+.project-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--signal);
+}
+
+/* Accessible focus states */
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--signal);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
