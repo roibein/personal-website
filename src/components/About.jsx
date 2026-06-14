@@ -3,9 +3,10 @@ import gsap from "gsap";
 
 const STATS = [
   { value: 3.96, label: "GPA", decimals: 2 },
-  { value: 2, label: "Research Labs", decimals: 0 },
+  { value: 5, label: "Real-World Projects", decimals: 0, suffix: "+" },
+  { value: 5, label: "Engineering Experiences", decimals: 0 },
+  { value: 5, label: "Programming Languages", decimals: 0 },
   { value: 1, label: "IEEE Publication", decimals: 0 },
-  { value: 20, label: "Engineers on Motorsports Team", decimals: 0, suffix: "+" },
 ];
 
 const CREDENTIALS = [
