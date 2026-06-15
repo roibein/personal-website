@@ -17,18 +17,20 @@ gsap.registerPlugin(ScrollTrigger);
 
 export default function App() {
   return (
-    <main className="min-h-screen bg-void text-ghost">
+    <div className="min-h-screen bg-void text-ghost">
       <Navbar />
-      <Hero />
-      <About />
-      <Experience />
-      <Projects />
-      <Skills />
-      <Trajectory />
-      <Motorsports />
-      <Extracurriculars />
-      <Contact />
+      <main>
+        <Hero />
+        <About />
+        <Experience />
+        <Projects />
+        <Skills />
+        <Trajectory />
+        <Motorsports />
+        <Extracurriculars />
+        <Contact />
+      </main>
       <Footer />
-    </main>
+    </div>
   );
 }

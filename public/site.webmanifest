@@ -1,0 +1,18 @@
+{
+  "name": "Roi Bein — Mechanical Engineering",
+  "short_name": "Roi Bein",
+  "description": "Mechanical engineering student at Duke University building hardware for automotive, aerospace, and medtech.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#09090f",
+  "theme_color": "#09090f",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
