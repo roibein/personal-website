@@ -93,10 +93,10 @@ export default function About() {
           </div>
 
           <div data-about className="flex flex-col gap-3">
-            <p className="font-mono text-[0.65rem] tracking-widest text-signal">
+            <p className="font-mono text-xs tracking-widest text-signal">
               OFF THE CLOCK
             </p>
-            <p className="max-w-xl font-sans text-sm leading-relaxed text-muted">
+            <p className="max-w-xl font-sans text-muted">
               Outside of engineering, I am a huge basketball enthusiast: I play
               whenever I can and watch even more. I support the Boston Celtics,
               Connecticut Sun, and of course the Duke Blue Devils. I also train
