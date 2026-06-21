@@ -11,6 +11,7 @@ function MediaCarousel({ items }) {
   const [autoplay, setAutoplay] = useState(true);
   const [inView, setInView] = useState(false);
   const containerRef = useRef(null);
+  const hasLooped = useRef(false);
   const count = items.length;
 
   // Only begin once the carousel is scrolled into view.
@@ -30,19 +31,26 @@ function MediaCarousel({ items }) {
     return () => observer.disconnect();
   }, []);
 
-  // Stop auto-advancing once the last slide is reached (one pass only).
-  useEffect(() => {
-    if (index >= count - 1) setAutoplay(false);
-  }, [index, count]);
-
   // Auto-advance every 3s, in view, until it stops or the visitor takes over.
+  // After the last slide, wrap back to the first slide for one final beat.
   useEffect(() => {
     if (!autoplay || !inView || count <= 1) return undefined;
     const id = setInterval(() => {
-      setIndex((i) => Math.min(i + 1, count - 1));
+      setIndex((i) => {
+        if (i >= count - 1) {
+          hasLooped.current = true;
+          return 0;
+        }
+        return i + 1;
+      });
     }, 3000);
     return () => clearInterval(id);
   }, [autoplay, inView, count]);
+
+  // Once it has wrapped back to the first slide, stop and rest there.
+  useEffect(() => {
+    if (hasLooped.current && index === 0) setAutoplay(false);
+  }, [index]);
 
   const goTo = (i) => {
     setAutoplay(false);
@@ -736,6 +744,11 @@ const PROJECTS = [
         type: "image",
         src: "/projects/robocop-cad.png",
         alt: "Onshape CAD model of the RoboCop helmet with the OCP POLICE 001 detailing",
+      },
+      {
+        type: "image",
+        src: "/projects/robocop-1987.jpg",
+        alt: "RoboCop from the 1987 film in full armored suit — the reference the helmet model was based on",
       },
     ],
     imageLeft: true,
