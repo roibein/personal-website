@@ -635,6 +635,11 @@ const PROJECTS = [
       "Fit was governed by worst-case tolerance analysis: ±0.004in printer accuracy per part stacked to ±0.008in per two-part joint, then tuned per fit — interference where parts must lock, clearance where the pusher must glide. Safety came first for the 3+ demographic: fillets on every exposed edge (which also improve mold flow), and every part at least 1.50in wide to pass the choking-hazard cylinder test.",
     ],
     tags: ["SolidWorks", "Injection Molding DFM", "Worst-Case Tolerancing", "Recycled ABS"],
+    link: {
+      href: "/happy-meal-toy-technical-memo.pdf",
+      label: "Read Technical Memo",
+      style: "button",
+    },
     media: [
       {
         type: "image",
@@ -842,37 +847,41 @@ export default function Projects() {
                     {para}
                   </p>
                 ))}
-                {project.caseStudy && (
-                  <button
-                    type="button"
-                    onClick={() => setActiveProject(project)}
-                    className="hover-card inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-void px-4 py-2.5 font-mono text-[0.65rem] tracking-widest text-ghost"
-                  >
-                    READ CASE STUDY
-                    <ArrowUpRight size={14} />
-                  </button>
+                {(project.caseStudy || project.link) && (
+                  <div className="flex flex-wrap items-center gap-3">
+                    {project.caseStudy && (
+                      <button
+                        type="button"
+                        onClick={() => setActiveProject(project)}
+                        className="hover-card inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-void px-4 py-2.5 font-mono text-[0.65rem] tracking-widest text-ghost"
+                      >
+                        READ CASE STUDY
+                        <ArrowUpRight size={14} />
+                      </button>
+                    )}
+                    {project.link &&
+                      (project.link.style === "button" ? (
+                        <a
+                          href={project.link.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="magnetic-btn inline-flex w-fit items-center gap-2.5 rounded-full bg-signal px-5 py-3 font-grotesk text-xs font-bold uppercase tracking-wide text-void"
+                        >
+                          <FileText size={16} />
+                          {project.link.label}
+                        </a>
+                      ) : (
+                        <a
+                          href={project.link.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="lift-link inline-flex items-center gap-2 font-mono text-xs tracking-widest text-signal"
+                        >
+                          {project.link.label} →
+                        </a>
+                      ))}
+                  </div>
                 )}
-                {project.link &&
-                  (project.link.style === "button" ? (
-                    <a
-                      href={project.link.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="magnetic-btn inline-flex w-fit items-center gap-2.5 rounded-full bg-signal px-5 py-3 font-grotesk text-xs font-bold uppercase tracking-wide text-void"
-                    >
-                      <FileText size={16} />
-                      {project.link.label}
-                    </a>
-                  ) : (
-                    <a
-                      href={project.link.href}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="lift-link inline-flex items-center gap-2 font-mono text-xs tracking-widest text-signal"
-                    >
-                      {project.link.label} →
-                    </a>
-                  ))}
                 {project.media && project.extra && (
                   <div className="min-w-0 py-2">{project.extra}</div>
                 )}
