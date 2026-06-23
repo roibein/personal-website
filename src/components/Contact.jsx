@@ -10,6 +10,8 @@ export default function Contact() {
   const [toast, setToast] = useState(false);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return undefined;
     const ctx = gsap.context(() => {
       gsap.fromTo(
         "[data-contact]",
@@ -29,11 +31,11 @@ export default function Contact() {
 
   const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText("roi.bein@duke.edu");
+      await navigator.clipboard.writeText("rb505@duke.edu");
       setToast(true);
       setTimeout(() => setToast(false), 2200);
     } catch {
-      window.location.href = "mailto:roi.bein@duke.edu";
+      window.location.href = "mailto:rb505@duke.edu";
     }
   };
 
@@ -41,7 +43,7 @@ export default function Contact() {
     {
       icon: Mail,
       label: "EMAIL",
-      value: "roi.bein@duke.edu",
+      value: "rb505@duke.edu",
       onClick: copyEmail,
       hint: "Click to copy",
     },

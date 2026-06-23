@@ -160,3 +160,23 @@ button:focus-visible {
   outline-offset: 3px;
   border-radius: 4px;
 }
+
+/* ---------------------------------------------------------------- */
+/* Respect prefers-reduced-motion — kill non-essential motion       */
+/* ---------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .scan-line {
+    display: none;
+  }
+}

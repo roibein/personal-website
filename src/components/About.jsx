@@ -21,6 +21,23 @@ export default function About() {
   const rootRef = useRef(null);
 
   useEffect(() => {
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (reduced) {
+      // Skip motion, but still resolve the count-up stats to their final values.
+      rootRef.current
+        ?.querySelectorAll("[data-counter]")
+        .forEach((el) => {
+          const target = parseFloat(el.dataset.counter);
+          const decimals = parseInt(el.dataset.decimals, 10);
+          const suffix = el.dataset.suffix || "";
+          el.textContent = target.toFixed(decimals) + suffix;
+        });
+      return undefined;
+    }
+
     const ctx = gsap.context(() => {
       gsap.fromTo(
         "[data-about]",

@@ -43,7 +43,7 @@ export default function Footer() {
             LinkedIn
           </a>
           <a
-            href="mailto:roi.bein@duke.edu"
+            href="mailto:rb505@duke.edu"
             className="lift-link font-mono text-xs text-muted hover:text-signal"
           >
             Email

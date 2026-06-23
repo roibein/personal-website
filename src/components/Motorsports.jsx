@@ -11,6 +11,8 @@ export default function Motorsports() {
   const bgRef = useRef(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return undefined;
     const ctx = gsap.context(() => {
       gsap.fromTo(
         bgRef.current,
@@ -66,7 +68,7 @@ export default function Motorsports() {
           data-moto
           className="font-grotesk text-4xl font-bold leading-tight tracking-tightest text-ghost sm:text-6xl"
         >
-          20+ Engineers. 1 Car. Zero Compromises.
+          Vehicle Dynamics on Duke's Formula SAE Car.
         </h2>
         <p data-moto className="max-w-2xl font-sans text-muted">
           Collaborating with 20+ engineers to design, manufacture, and test a

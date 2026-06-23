@@ -28,6 +28,31 @@ const ENTRIES = [
       "Conduct biomechanics experiments using a drop tower, load cell instrumentation, and anthropomorphic test devices.",
       "Analyze and graph 600+ trials of gyroscopic acceleration data using Python.",
     ],
+    analysis: {
+      label: "DATA ANALYSIS — SENSOR VALIDATION",
+      method:
+        "Benchmarked a Prevent instrumented mouthguard against a reference lab system — a NOCSAE headform on a drop tower, helmeted, at 8/50/90 cm drop heights. In Python (pandas / NumPy), I parsed the mouthguard and reference time-series, removed pre-impact baseline drift, computed resultant kinematics from the x/y/z channels, differentiated angular velocity to recover angular acceleration, windowed each signal around its impact peak, rejected outliers, then fit least-squares agreement lines against a 1:1 reference.",
+      plots: [
+        {
+          src: "/research/pla.png",
+          alt: "Scatter plot of mouthguard vs reference peak linear acceleration, with a best-fit line of slope 0.46 against a 1:1 reference line",
+          caption:
+            "Peak Linear Acceleration — moderate agreement; the mouthguard systematically under-reads (slope ≈ 0.46 vs 1:1).",
+        },
+        {
+          src: "/research/pav.png",
+          alt: "Scatter plot of mouthguard vs reference peak angular velocity, with a best-fit line of slope 0.82 against a 1:1 reference line",
+          caption:
+            "Peak Angular Velocity — the closest agreement of the three (slope ≈ 0.82).",
+        },
+        {
+          src: "/research/paa.png",
+          alt: "Scatter plot of mouthguard vs reference peak angular acceleration, with points collapsing far below the 1:1 reference line",
+          caption:
+            "Peak Angular Acceleration — the mouthguard fails to capture it; values collapse far below the reference.",
+        },
+      ],
+    },
   },
   {
     company: "Clemson University Bioengineering",
@@ -54,6 +79,8 @@ export default function Experience() {
   const rootRef = useRef(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return undefined;
     const ctx = gsap.context(() => {
       gsap.fromTo(
         "[data-entry]",
@@ -116,6 +143,35 @@ export default function Experience() {
                     </li>
                   ))}
                 </ul>
+
+                {entry.analysis && (
+                  <div className="mt-6 rounded-[1.25rem] border border-steel bg-void/60 p-5 sm:p-6">
+                    <p className="font-mono text-[0.65rem] tracking-widest text-signal">
+                      {entry.analysis.label}
+                    </p>
+                    <p className="mt-3 font-sans text-sm leading-relaxed text-muted">
+                      {entry.analysis.method}
+                    </p>
+                    <div className="mt-5 grid gap-4 sm:grid-cols-3">
+                      {entry.analysis.plots.map((plot) => (
+                        <figure
+                          key={plot.src}
+                          className="flex flex-col gap-2.5"
+                        >
+                          <img
+                            src={plot.src}
+                            alt={plot.alt}
+                            loading="lazy"
+                            className="w-full rounded-[0.6rem] border border-steel bg-ghost p-2"
+                          />
+                          <figcaption className="px-1 text-center font-mono text-[0.68rem] leading-snug tracking-wide text-muted">
+                            {plot.caption}
+                          </figcaption>
+                        </figure>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </article>
             ))}
           </div>

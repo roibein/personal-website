@@ -1,0 +1,477 @@
+{
+    "asset": {
+        "generator": "SOLIDWORKSGLTF",
+        "version": "2.0"
+    },
+    "scene": 0,
+    "scenes": [
+        {
+            "name": "Default",
+            "nodes": [
+                0,
+                1
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "matrix": [
+                -0.6961606669689248,
+                -0.7060846888692394,
+                0.12963308956362737,
+                0.0,
+                0.6283741009500206,
+                -0.5120212153640127,
+                0.5856451692555936,
+                0.0,
+                -0.34714019505184834,
+                0.48916120774402067,
+                0.8001343623528339,
+                0.0,
+                1.0571465109617089,
+                1.057202027926505,
+                1.5397056444518715,
+                1.0
+            ],
+            "camera": 0,
+            "name": "current camera"
+        },
+        {
+            "children": [
+                2,
+                3,
+                4,
+                5
+            ],
+            "name": "Grinder Assembly"
+        },
+        {
+            "rotation": [
+                0.6790866851806641,
+                -0.6790866255760193,
+                -0.19708210229873657,
+                -0.19708210229873657
+            ],
+            "scale": [
+                0.9999999403953552,
+                1.0,
+                0.9999999403953552
+            ],
+            "translation": [
+                1.4008198976516724,
+                0.7302200794219971,
+                0.9321993589401245
+            ],
+            "mesh": 0,
+            "name": "Vertical roller-1"
+        },
+        {
+            "translation": [
+                1.350719928741455,
+                0.707395076751709,
+                0.8571993708610535
+            ],
+            "mesh": 1,
+            "name": "Grinder Box-1"
+        },
+        {
+            "rotation": [
+                -0.06342944502830505,
+                -0.06342944502830505,
+                -0.7042561769485474,
+                0.7042561769485474
+            ],
+            "scale": [
+                0.9999999403953552,
+                1.0,
+                0.9999999403953552
+            ],
+            "translation": [
+                1.3006199598312378,
+                0.6845700740814209,
+                0.9321993589401245
+            ],
+            "mesh": 2,
+            "name": "Grinder Gear With Handle-2"
+        },
+        {
+            "translation": [
+                1.350719928741455,
+                0.707395076751709,
+                0.9571993350982666
+            ],
+            "mesh": 3,
+            "name": "Grinder Funnel-1"
+        }
+    ],
+    "cameras": [
+        {
+            "type": "orthographic",
+            "orthographic": {
+                "xmag": 0.1883354293013167,
+                "ymag": 0.14553192264192652,
+                "zfar": 1.048747763286546,
+                "znear": 0.6037297067617258
+            }
+        }
+    ],
+    "meshes": [
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 1,
+                        "NORMAL": 2
+                    },
+                    "indices": 0,
+                    "material": 0,
+                    "mode": 4
+                }
+            ]
+        },
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 4,
+                        "NORMAL": 5
+                    },
+                    "indices": 3,
+                    "material": 0,
+                    "mode": 4
+                }
+            ]
+        },
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 7,
+                        "NORMAL": 8
+                    },
+                    "indices": 6,
+                    "material": 0,
+                    "mode": 4
+                }
+            ]
+        },
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 10,
+                        "NORMAL": 11
+                    },
+                    "indices": 9,
+                    "material": 0,
+                    "mode": 4
+                }
+            ]
+        }
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 49488,
+            "type": "SCALAR",
+            "min": [
+                0
+            ],
+            "max": [
+                17313
+            ]
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 17314,
+            "type": "VEC3",
+            "min": [
+                -0.02536817453801632,
+                -0.019999999552965164,
+                -0.02536817453801632
+            ],
+            "max": [
+                0.02536817453801632,
+                0.11999999731779099,
+                0.02536817453801632
+            ]
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 17314,
+            "type": "VEC3",
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0
+            ],
+            "max": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "bufferView": 3,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 816,
+            "type": "SCALAR",
+            "min": [
+                0
+            ],
+            "max": [
+                395
+            ]
+        },
+        {
+            "bufferView": 4,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 396,
+            "type": "VEC3",
+            "min": [
+                -0.06499999761581421,
+                -0.06499999761581421,
+                0.0
+            ],
+            "max": [
+                0.06499999761581421,
+                0.06499999761581421,
+                0.10000000149011612
+            ]
+        },
+        {
+            "bufferView": 5,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 396,
+            "type": "VEC3",
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0
+            ],
+            "max": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "bufferView": 6,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 5448,
+            "type": "SCALAR",
+            "min": [
+                0
+            ],
+            "max": [
+                2877
+            ]
+        },
+        {
+            "bufferView": 7,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 2878,
+            "type": "VEC3",
+            "min": [
+                -0.02536817453801632,
+                -0.08500000089406967,
+                -0.02536817453801632
+            ],
+            "max": [
+                0.07500000298023224,
+                0.11999999731779099,
+                0.02536817453801632
+            ]
+        },
+        {
+            "bufferView": 8,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 2878,
+            "type": "VEC3",
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0
+            ],
+            "max": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "bufferView": 9,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 168,
+            "type": "SCALAR",
+            "min": [
+                0
+            ],
+            "max": [
+                103
+            ]
+        },
+        {
+            "bufferView": 10,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 104,
+            "type": "VEC3",
+            "min": [
+                -0.06499999761581421,
+                -0.06499999761581421,
+                -7.531577911788211e-18
+            ],
+            "max": [
+                0.06499999761581421,
+                0.06499999761581421,
+                0.061500001698732376
+            ]
+        },
+        {
+            "bufferView": 11,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 104,
+            "type": "VEC3",
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0
+            ],
+            "max": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        }
+    ],
+    "materials": [
+        {
+            "name": "defaultplastic",
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    0.5989418101001601,
+                    0.6455552910764322,
+                    0.8591735777059335,
+                    1.0
+                ],
+                "metallicFactor": 0.0,
+                "roughnessFactor": 0.16999999880790712
+            }
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 197952,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 197952,
+            "byteLength": 207768,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 405720,
+            "byteLength": 207768,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 1,
+            "byteOffset": 0,
+            "byteLength": 3264,
+            "target": 34963
+        },
+        {
+            "buffer": 1,
+            "byteOffset": 3264,
+            "byteLength": 4752,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 1,
+            "byteOffset": 8016,
+            "byteLength": 4752,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 2,
+            "byteOffset": 0,
+            "byteLength": 21792,
+            "target": 34963
+        },
+        {
+            "buffer": 2,
+            "byteOffset": 21792,
+            "byteLength": 34536,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 2,
+            "byteOffset": 56328,
+            "byteLength": 34536,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 3,
+            "byteOffset": 0,
+            "byteLength": 672,
+            "target": 34963
+        },
+        {
+            "buffer": 3,
+            "byteOffset": 672,
+            "byteLength": 1248,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 3,
+            "byteOffset": 1920,
+            "byteLength": 1248,
+            "byteStride": 12,
+            "target": 34962
+        }
+    ],
+    "buffers": [
+        {
+            "uri": "0-1-Vertical roller-1.bin",
+            "byteLength": 613488
+        },
+        {
+            "uri": "0-2-Grinder Box-1.bin",
+            "byteLength": 12768
+        },
+        {
+            "uri": "0-3-Grinder Gear With Handle-2.bin",
+            "byteLength": 90864
+        },
+        {
+            "uri": "0-4-Grinder Funnel-1.bin",
+            "byteLength": 3168
+        }
+    ]
+}

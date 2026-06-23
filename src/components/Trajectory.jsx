@@ -65,6 +65,8 @@ export default function Trajectory() {
   const rootRef = useRef(null);
 
   useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return undefined;
     const ctx = gsap.context(() => {
       gsap.fromTo(
         "[data-field]",
