@@ -4,15 +4,6 @@ import { FileText, X } from "lucide-react";
 
 const ENTRIES = [
   {
-    company: "Duke University",
-    role: "Software Engineering Intern",
-    date: "MAY–JUL 2026",
-    bullets: [
-      "Developed full-stack functionality for a research mobile application used by 100+ participants to collect wearable health data, building SwiftUI frontend interfaces and FastAPI backend services.",
-      "Built fitness dashboards, Duke Recreation event integration, social leaderboards, and in-app games to improve user engagement and support continuous health-data collection.",
-    ],
-  },
-  {
     company: "Duke Co-Lab",
     role: "Makerspace Technician",
     date: "JAN 2026–PRESENT",
@@ -54,6 +45,15 @@ const ENTRIES = [
         },
       ],
     },
+  },
+  {
+    company: "Duke University",
+    role: "Software Engineering Intern",
+    date: "MAY–JUL 2026",
+    bullets: [
+      "Developed full-stack functionality for a research mobile application used by 100+ participants to collect wearable health data, building SwiftUI frontend interfaces and FastAPI backend services.",
+      "Built fitness dashboards, Duke Recreation event integration, social leaderboards, and in-app games to improve user engagement and support continuous health-data collection.",
+    ],
   },
   {
     company: "Clemson University Bioengineering",
