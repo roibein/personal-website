@@ -20,7 +20,7 @@ const prefersReducedMotion = () =>
 /* Media carousel — every slide fits (object-contain) over a blurred   */
 /* backdrop of itself, so CAD renders and photos all sit cleanly.      */
 /* ------------------------------------------------------------------ */
-function MediaCarousel({ items }) {
+function MediaCarousel({ items, splitLayout = false }) {
   const [index, setIndex] = useState(0);
   const [autoplay, setAutoplay] = useState(true);
   const [inView, setInView] = useState(false);
@@ -73,9 +73,16 @@ function MediaCarousel({ items }) {
   };
 
   return (
-    <div ref={containerRef} className="flex w-full flex-col bg-void">
-      {/* Fixed-aspect frame — caption sits directly beneath this, not the card bottom */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[3/2]">
+    <div
+      ref={containerRef}
+      className={`flex w-full flex-col bg-void ${splitLayout ? "h-full min-h-0" : ""}`}
+    >
+      {/* Fixed-aspect frame — or flex-fill when stacked above a diagram (65/35 split) */}
+      <div
+        className={`relative w-full overflow-hidden ${
+          splitLayout ? "min-h-0 flex-1" : "aspect-[4/3] sm:aspect-[3/2]"
+        }`}
+      >
         {items.map((item, i) => (
           <div
             key={item.src}
@@ -530,82 +537,83 @@ function ExplodedView() {
 /* ------------------------------------------------------------------ */
 /* Interactive element 4 — CD case parametric schematic (real data)    */
 /* ------------------------------------------------------------------ */
-function CDCaseSchematic() {
-  const equations = [
-    ['"CD_Height"', "125mm"],
-    ['"CD_Thickness"', "10mm"],
-    ['"CD_Width"', "142mm"],
-    ['"Wall_Thickness"', "10mm"],
-    ['"Tolerance"', "1mm"],
-    ['"Total_Height"', '3 * "CD_Height" + 2 * "Wall_Thickness" + 4mm'],
-    ['"Total_Width"', '"CD_Width" * 3 + "Wall_Thickness" * 2 + 4mm'],
-    ['"Dist_Btwn_Pegs"', '("Total_Height" - 2 * "Peg_Buffer") / ("Num_Pegs" - 1)'],
-  ];
+const CD_CASE_EQUATIONS = [
+  ['"CD_Height"', "125mm"],
+  ['"CD_Thickness"', "10mm"],
+  ['"CD_Width"', "142mm"],
+  ['"Wall_Thickness"', "10mm"],
+  ['"Tolerance"', "1mm"],
+  ['"Total_Height"', '3 * "CD_Height" + 2 * "Wall_Thickness" + 4mm'],
+  ['"Total_Width"', '"CD_Width" * 3 + "Wall_Thickness" * 2 + 4mm'],
+  ['"Dist_Btwn_Pegs"', '("Total_Height" - 2 * "Peg_Buffer") / ("Num_Pegs" - 1)'],
+];
 
+function CDCaseDiagram() {
   return (
-    <div className="flex w-full min-w-0 flex-col gap-6">
-      <svg
-        viewBox="0 0 314 280"
-        className="h-auto w-full max-w-sm self-center"
-        role="img"
-        aria-label="Front-view schematic of the 3 by 3 CD display case with overall dimensions 450 by 399 millimeters"
+    <svg
+      viewBox="0 0 314 280"
+      className="h-auto w-full max-w-[280px] sm:max-w-[320px]"
+      role="img"
+      aria-label="Front-view schematic of the 3 by 3 CD display case with overall dimensions 450 by 399 millimeters"
+    >
+      <rect
+        x="20"
+        y="20"
+        width="260"
+        height="230"
+        rx="6"
+        fill="none"
+        stroke="var(--ghost)"
+        strokeWidth="2"
+      />
+      {[0, 1, 2].map((row) =>
+        [0, 1, 2].map((col) => (
+          <rect
+            key={`${row}-${col}`}
+            x={32 + col * 82}
+            y={32 + row * 70}
+            width={70}
+            height={58}
+            fill="none"
+            stroke="var(--steel)"
+            strokeWidth="1.5"
+          />
+        ))
+      )}
+      <line x1="20" y1="264" x2="280" y2="264" stroke="var(--signal)" strokeWidth="1" />
+      <text x="150" y="278" textAnchor="middle" fill="var(--signal)" fontSize="11" fontFamily="Space Mono, monospace">
+        450mm
+      </text>
+      <line x1="292" y1="20" x2="292" y2="250" stroke="var(--signal)" strokeWidth="1" />
+      <text
+        x="296"
+        y="135"
+        fill="var(--signal)"
+        fontSize="11"
+        fontFamily="Space Mono, monospace"
+        transform="rotate(90 296 135)"
+        textAnchor="middle"
       >
-        <rect
-          x="20"
-          y="20"
-          width="260"
-          height="230"
-          rx="6"
-          fill="none"
-          stroke="var(--ghost)"
-          strokeWidth="2"
-        />
-        {[0, 1, 2].map((row) =>
-          [0, 1, 2].map((col) => (
-            <rect
-              key={`${row}-${col}`}
-              x={32 + col * 82}
-              y={32 + row * 70}
-              width={70}
-              height={58}
-              fill="none"
-              stroke="var(--steel)"
-              strokeWidth="1.5"
-            />
-          ))
-        )}
-        {/* Dimension lines */}
-        <line x1="20" y1="264" x2="280" y2="264" stroke="var(--signal)" strokeWidth="1" />
-        <text x="150" y="278" textAnchor="middle" fill="var(--signal)" fontSize="11" fontFamily="Space Mono, monospace">
-          450mm
-        </text>
-        <line x1="292" y1="20" x2="292" y2="250" stroke="var(--signal)" strokeWidth="1" />
-        <text
-          x="296"
-          y="135"
-          fill="var(--signal)"
-          fontSize="11"
-          fontFamily="Space Mono, monospace"
-          transform="rotate(90 296 135)"
-          textAnchor="middle"
-        >
-          399mm
-        </text>
-      </svg>
+        399mm
+      </text>
+    </svg>
+  );
+}
 
-      <div className="min-w-0 max-w-full overflow-x-auto rounded-[1rem] border border-steel bg-void p-5">
-        <p className="mb-3 font-mono text-[0.6rem] tracking-widest text-muted">
-          SOLIDWORKS GLOBAL VARIABLES — ACTUAL MODEL EQUATIONS
-        </p>
-        <div className="flex flex-col gap-1.5 font-mono text-[0.65rem] leading-relaxed">
-          {equations.map(([name, value]) => (
-            <div key={name} className="flex gap-2 whitespace-nowrap">
-              <span className="text-signal">{name}</span>
-              <span className="text-muted">=</span>
-              <span className="text-ghost">{value}</span>
-            </div>
-          ))}
-        </div>
+function CDCaseVariables() {
+  return (
+    <div className="min-w-0 max-w-full overflow-x-auto rounded-[1rem] border border-steel bg-void p-5">
+      <p className="mb-3 font-mono text-[0.6rem] tracking-widest text-muted">
+        SOLIDWORKS GLOBAL VARIABLES — ACTUAL MODEL EQUATIONS
+      </p>
+      <div className="flex flex-col gap-1.5 font-mono text-[0.65rem] leading-relaxed">
+        {CD_CASE_EQUATIONS.map(([name, value]) => (
+          <div key={name} className="flex gap-2 whitespace-nowrap">
+            <span className="text-signal">{name}</span>
+            <span className="text-muted">=</span>
+            <span className="text-ghost">{value}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -833,7 +841,8 @@ const PROJECTS = [
       alt: "Interactive 3D model of the CD display case assembly — four interlocking panels with mounting pins",
     },
     imageLeft: false,
-    extra: <CDCaseSchematic />,
+    extra: <CDCaseVariables />,
+    visualExtra: <CDCaseDiagram />,
   },
   {
     id: "robocop-helmet",
@@ -978,17 +987,31 @@ export default function Projects() {
             >
               {/* Visual side */}
               <div
-                className={`flex min-h-[260px] min-w-0 items-center justify-center bg-void ${
-                  project.imageLeft ? "lg:order-1" : "lg:order-2"
-                }`}
+                className={`min-h-[260px] min-w-0 bg-void ${
+                  project.visualExtra
+                    ? "grid h-full grid-rows-[65fr_35fr]"
+                    : `flex flex-col ${project.imageLeft ? "lg:order-1" : "lg:order-2"} items-center justify-center`
+                } ${project.imageLeft ? "lg:order-1" : "lg:order-2"}`}
               >
                 {project.media ? (
-                  <div className="w-full">
-                    <MediaCarousel items={project.media} />
+                  <div
+                    className={`w-full min-h-0 overflow-hidden ${
+                      project.visualExtra ? "" : "shrink-0"
+                    }`}
+                  >
+                    <MediaCarousel
+                      items={project.media}
+                      splitLayout={Boolean(project.visualExtra)}
+                    />
                   </div>
                 ) : (
                   <div className="flex h-full items-center justify-center bg-iron p-8">
                     {project.extra}
+                  </div>
+                )}
+                {project.visualExtra && (
+                  <div className="flex min-h-0 w-full items-center justify-center px-4 pb-4 sm:px-6">
+                    {project.visualExtra}
                   </div>
                 )}
               </div>
@@ -1064,7 +1087,11 @@ export default function Projects() {
                   </div>
                 )}
                 {project.media && project.extra && (
-                  <div className="min-w-0 py-2">{project.extra}</div>
+                  <div
+                    className={`min-w-0 ${project.visualExtra ? "mt-auto pt-2" : "py-2"}`}
+                  >
+                    {project.extra}
+                  </div>
                 )}
                 <div className="mt-auto flex flex-wrap gap-2 pt-2">
                   {project.tags.map((tag) => (
