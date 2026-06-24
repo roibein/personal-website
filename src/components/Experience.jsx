@@ -1,5 +1,6 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { FileText, X } from "lucide-react";
 
 const ENTRIES = [
   {
@@ -75,8 +76,75 @@ const ENTRIES = [
   },
 ];
 
+function AnalysisWorkModal({ analysis, onClose }) {
+  useEffect(() => {
+    if (!analysis) return undefined;
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [analysis, onClose]);
+
+  if (!analysis) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-[80] flex overflow-y-auto bg-void/80 p-4 backdrop-blur-md sm:p-8"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={analysis.label}
+    >
+      <div
+        className="relative m-auto w-full max-w-4xl overflow-hidden rounded-[2rem] border border-steel bg-iron"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close project work"
+          className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-steel bg-void/70 text-ghost backdrop-blur transition-colors hover:border-signal hover:text-signal"
+        >
+          <X size={18} />
+        </button>
+
+        <div className="flex flex-col gap-6 p-8 sm:p-10">
+          <p className="font-mono text-[0.65rem] tracking-widest text-signal">
+            {analysis.label}
+          </p>
+          <p className="max-w-3xl font-sans text-sm leading-relaxed text-muted">
+            {analysis.method}
+          </p>
+          <div className="grid gap-4 border-t border-steel pt-6 sm:grid-cols-3">
+            {analysis.plots.map((plot) => (
+              <figure key={plot.src} className="flex flex-col gap-2.5">
+                <img
+                  src={plot.src}
+                  alt={plot.alt}
+                  loading="lazy"
+                  className="w-full rounded-[0.6rem] border border-steel bg-ghost p-2"
+                />
+                <figcaption className="px-1 text-center font-mono text-[0.68rem] leading-snug tracking-wide text-muted">
+                  {plot.caption}
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function Experience() {
   const rootRef = useRef(null);
+  const [activeAnalysis, setActiveAnalysis] = useState(null);
 
   useEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
@@ -145,38 +213,25 @@ export default function Experience() {
                 </ul>
 
                 {entry.analysis && (
-                  <div className="mt-6 rounded-[1.25rem] border border-steel bg-void/60 p-5 sm:p-6">
-                    <p className="font-mono text-[0.65rem] tracking-widest text-signal">
-                      {entry.analysis.label}
-                    </p>
-                    <p className="mt-3 font-sans text-sm leading-relaxed text-muted">
-                      {entry.analysis.method}
-                    </p>
-                    <div className="mt-5 grid gap-4 sm:grid-cols-3">
-                      {entry.analysis.plots.map((plot) => (
-                        <figure
-                          key={plot.src}
-                          className="flex flex-col gap-2.5"
-                        >
-                          <img
-                            src={plot.src}
-                            alt={plot.alt}
-                            loading="lazy"
-                            className="w-full rounded-[0.6rem] border border-steel bg-ghost p-2"
-                          />
-                          <figcaption className="px-1 text-center font-mono text-[0.68rem] leading-snug tracking-wide text-muted">
-                            {plot.caption}
-                          </figcaption>
-                        </figure>
-                      ))}
-                    </div>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setActiveAnalysis(entry.analysis)}
+                    className="magnetic-btn mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-signal px-5 py-3 font-grotesk text-xs font-bold uppercase tracking-wide text-void"
+                  >
+                    <FileText size={16} />
+                    See Project Work
+                  </button>
                 )}
               </article>
             ))}
           </div>
         </div>
       </div>
+
+      <AnalysisWorkModal
+        analysis={activeAnalysis}
+        onClose={() => setActiveAnalysis(null)}
+      />
     </section>
   );
 }

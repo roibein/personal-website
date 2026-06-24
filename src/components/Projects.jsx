@@ -73,12 +73,9 @@ function MediaCarousel({ items }) {
   };
 
   return (
-    <div
-      ref={containerRef}
-      className="absolute inset-0 flex flex-col overflow-hidden bg-void"
-    >
-      {/* Image stage — captions sit below this, never on top of it */}
-      <div className="relative min-h-0 flex-1">
+    <div ref={containerRef} className="flex w-full flex-col bg-void">
+      {/* Fixed-aspect frame — caption sits directly beneath this, not the card bottom */}
+      <div className="relative aspect-[4/3] w-full overflow-hidden sm:aspect-[3/2]">
         {items.map((item, i) => (
           <div
             key={item.src}
@@ -125,43 +122,39 @@ function MediaCarousel({ items }) {
             <div className="absolute right-3 top-3 z-10 rounded-full bg-void/60 px-2.5 py-1 font-mono text-[0.6rem] tracking-widest text-ghost backdrop-blur">
               {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
             </div>
+
+            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
+              {items.map((item, i) => (
+                <button
+                  key={item.src}
+                  type="button"
+                  onClick={() => goTo(i)}
+                  aria-label={`Go to image ${i + 1}`}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === index ? "w-5 bg-signal" : "w-1.5 bg-ghost/40 hover:bg-ghost/70"
+                  }`}
+                />
+              ))}
+            </div>
           </>
         )}
-
-        {/* Caption pill above the dots — translucent bubble, no backing band */}
-        {(items[index]?.caption || count > 1) && (
-          <div className="absolute inset-x-0 bottom-3 z-10 flex flex-col items-center gap-2.5 px-3">
-            {items[index]?.caption && (
-              <p className="rounded-full border border-ghost/15 bg-ghost/10 px-4 py-1.5 text-center font-mono text-[0.78rem] leading-snug tracking-wide text-ghost/90 shadow-lg shadow-void/40 backdrop-blur-md">
-                {items[index].caption}
-              </p>
-            )}
-            {count > 1 && (
-              <div className="flex items-center gap-2">
-                {items.map((item, i) => (
-                  <button
-                    key={item.src}
-                    type="button"
-                    onClick={() => goTo(i)}
-                    aria-label={`Go to image ${i + 1}`}
-                    className={`h-1.5 rounded-full transition-all ${
-                      i === index ? "w-5 bg-signal" : "w-1.5 bg-ghost/40 hover:bg-ghost/70"
-                    }`}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
       </div>
+
+      {items[index]?.caption && (
+        <div className="flex shrink-0 justify-center px-3 pb-3 pt-2.5">
+          <p className="rounded-full border border-steel/80 bg-iron/95 px-4 py-2 text-center font-mono text-[0.78rem] leading-snug tracking-wide text-ghost shadow-lg shadow-void/70 backdrop-blur-sm">
+            {items[index].caption}
+          </p>
+        </div>
+      )}
     </div>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* Case-study modal — fuller writeup, reuses the media carousel        */
+/* Project modal — case-study writeup OR a focused 3D model view       */
 /* ------------------------------------------------------------------ */
-function ProjectModal({ project, onClose }) {
+function ProjectModal({ project, mode = "study", onClose, onMode }) {
   const [copied, setCopied] = useState(false);
 
   useEffect(() => {
@@ -182,6 +175,8 @@ function ProjectModal({ project, onClose }) {
 
   if (!project) return null;
 
+  const isModel = mode === "model" && Boolean(project.model);
+
   const copyLink = async () => {
     const url = `${window.location.origin}${window.location.pathname}#${project.id}`;
     try {
@@ -199,7 +194,7 @@ function ProjectModal({ project, onClose }) {
       onClick={onClose}
       role="dialog"
       aria-modal="true"
-      aria-label={`${project.title} case study`}
+      aria-label={isModel ? `${project.title} 3D model` : `${project.title} case study`}
     >
       <div
         className="relative m-auto w-full max-w-3xl overflow-hidden rounded-[2rem] border border-steel bg-iron"
@@ -208,16 +203,26 @@ function ProjectModal({ project, onClose }) {
         <button
           type="button"
           onClick={onClose}
-          aria-label="Close case study"
+          aria-label={isModel ? "Close 3D model" : "Close case study"}
           className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-steel bg-void/70 text-ghost backdrop-blur transition-colors hover:border-signal hover:text-signal"
         >
           <X size={18} />
         </button>
 
-        {project.media && (
-          <div className="relative h-[38vh] min-h-[240px] w-full">
-            <MediaCarousel items={project.media} />
+        {/* Top visual — interactive model in 3D mode, photo carousel otherwise */}
+        {isModel ? (
+          <div className="relative h-[55vh] min-h-[340px] w-full bg-gradient-to-b from-iron to-void">
+            <ModelViewer src={project.model.src} alt={project.model.alt} />
+            <span className="absolute left-4 top-4 z-10 flex items-center gap-2 rounded-full bg-void/70 px-3 py-1.5 font-mono text-[0.6rem] tracking-widest text-signal backdrop-blur">
+              <Box size={13} />
+              INTERACTIVE 3D MODEL
+            </span>
+            <span className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full bg-void/70 px-3 py-1.5 font-mono text-[0.6rem] tracking-widest text-muted backdrop-blur">
+              DRAG TO ROTATE · SCROLL TO ZOOM
+            </span>
           </div>
+        ) : (
+          project.media && <MediaCarousel items={project.media} />
         )}
 
         <div className="flex flex-col gap-6 p-8 sm:p-10">
@@ -236,33 +241,41 @@ function ProjectModal({ project, onClose }) {
             </p>
           </div>
 
-          <button
-            type="button"
-            onClick={copyLink}
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-void px-3.5 py-2 font-mono text-[0.6rem] tracking-widest text-ghost transition-colors hover:border-signal hover:text-signal"
-          >
-            {copied ? <Check size={13} /> : <Link2 size={13} />}
-            {copied ? "LINK COPIED" : "COPY LINK TO THIS PROJECT"}
-          </button>
+          <div className="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={copyLink}
+              className="inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-void px-3.5 py-2 font-mono text-[0.6rem] tracking-widest text-ghost transition-colors hover:border-signal hover:text-signal"
+            >
+              {copied ? <Check size={13} /> : <Link2 size={13} />}
+              {copied ? "LINK COPIED" : "COPY LINK TO THIS PROJECT"}
+            </button>
 
-          {project.model && (
-            <div className="flex flex-col gap-2.5 border-t border-steel pt-6">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="flex items-center gap-2 font-mono text-[0.65rem] tracking-widest text-signal">
-                  <Box size={14} />
-                  INTERACTIVE 3D MODEL
-                </p>
-                <p className="font-mono text-[0.6rem] tracking-widest text-muted">
-                  DRAG TO ROTATE · SCROLL TO ZOOM
-                </p>
-              </div>
-              <div className="h-[46vh] min-h-[300px] w-full overflow-hidden rounded-[1rem] border border-steel bg-gradient-to-b from-iron to-void">
-                <ModelViewer src={project.model.src} alt={project.model.alt} />
-              </div>
-            </div>
-          )}
+            {/* Cross-navigation between the two views */}
+            {isModel
+              ? project.caseStudy && (
+                  <button
+                    type="button"
+                    onClick={() => onMode?.("study")}
+                    className="inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-void px-3.5 py-2 font-mono text-[0.6rem] tracking-widest text-ghost transition-colors hover:border-signal hover:text-signal"
+                  >
+                    READ FULL CASE STUDY
+                    <ArrowUpRight size={13} />
+                  </button>
+                )
+              : project.model && (
+                  <button
+                    type="button"
+                    onClick={() => onMode?.("model")}
+                    className="inline-flex w-fit items-center gap-2 rounded-full border border-signal/60 bg-signal/10 px-3.5 py-2 font-mono text-[0.6rem] tracking-widest text-signal transition-colors hover:bg-signal/20"
+                  >
+                    <Box size={13} />
+                    EXPLORE IN 3D
+                  </button>
+                )}
+          </div>
 
-          {project.caseStudy && (
+          {!isModel && project.caseStudy && (
             <div className="flex flex-col gap-5 border-t border-steel pt-6">
               {project.caseStudy.map((block) => (
                 <div key={block.h} className="flex flex-col gap-1.5">
@@ -277,7 +290,7 @@ function ProjectModal({ project, onClose }) {
             </div>
           )}
 
-          {project.link && (
+          {!isModel && project.link && (
             <a
               href={project.link.href}
               target="_blank"
@@ -892,16 +905,21 @@ const PROJECTS = [
 export default function Projects() {
   const rootRef = useRef(null);
   const [activeProject, setActiveProject] = useState(null);
+  const [modalMode, setModalMode] = useState("study");
 
   // Open a case study from the URL hash on first load (shareable deep links).
   useEffect(() => {
     const id = window.location.hash.replace(/^#/, "");
     if (!id) return;
     const match = PROJECTS.find((p) => p.id === id);
-    if (match) setActiveProject(match);
+    if (match) {
+      setModalMode("study");
+      setActiveProject(match);
+    }
   }, []);
 
-  const openProject = (project) => {
+  const openProject = (project, mode = "study") => {
+    setModalMode(mode);
     setActiveProject(project);
     window.history.replaceState(null, "", `#${project.id}`);
   };
@@ -960,12 +978,14 @@ export default function Projects() {
             >
               {/* Visual side */}
               <div
-                className={`relative min-h-[260px] min-w-0 ${
+                className={`flex min-h-[260px] min-w-0 items-center justify-center bg-void ${
                   project.imageLeft ? "lg:order-1" : "lg:order-2"
                 }`}
               >
                 {project.media ? (
-                  <MediaCarousel items={project.media} />
+                  <div className="w-full">
+                    <MediaCarousel items={project.media} />
+                  </div>
                 ) : (
                   <div className="flex h-full items-center justify-center bg-iron p-8">
                     {project.extra}
@@ -1003,7 +1023,7 @@ export default function Projects() {
                     {project.caseStudy && (
                       <button
                         type="button"
-                        onClick={() => openProject(project)}
+                        onClick={() => openProject(project, "study")}
                         className="hover-card inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-void px-4 py-2.5 font-mono text-[0.65rem] tracking-widest text-ghost"
                       >
                         READ CASE STUDY
@@ -1013,7 +1033,7 @@ export default function Projects() {
                     {project.model && (
                       <button
                         type="button"
-                        onClick={() => openProject(project)}
+                        onClick={() => openProject(project, "model")}
                         className="hover-card inline-flex w-fit items-center gap-2 rounded-full border border-signal/60 bg-signal/10 px-4 py-2.5 font-mono text-[0.65rem] tracking-widest text-signal"
                       >
                         <Box size={14} />
@@ -1062,7 +1082,12 @@ export default function Projects() {
         </div>
       </div>
 
-      <ProjectModal project={activeProject} onClose={closeProject} />
+      <ProjectModal
+        project={activeProject}
+        mode={modalMode}
+        onClose={closeProject}
+        onMode={setModalMode}
+      />
     </section>
   );
 }
