@@ -7,7 +7,7 @@ import About from "./components/About.jsx";
 import Experience from "./components/Experience.jsx";
 import Projects from "./components/Projects.jsx";
 import Skills from "./components/Skills.jsx";
-import Trajectory from "./components/Trajectory.jsx";
+import OffTheClock from "./components/OffTheClock.jsx";
 import Motorsports from "./components/Motorsports.jsx";
 import Extracurriculars from "./components/Extracurriculars.jsx";
 import Contact from "./components/Contact.jsx";
@@ -25,7 +25,7 @@ export default function App() {
         <Experience />
         <Projects />
         <Skills />
-        <Trajectory />
+        <OffTheClock />
         <Motorsports />
         <Extracurriculars />
         <Contact />

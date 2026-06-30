@@ -71,10 +71,6 @@ export default function Hero() {
           </span>
         </h1>
 
-        <p data-hero className="font-sans text-base font-normal text-muted">
-          Automotive · Aerospace · MedTech
-        </p>
-
         <span
           data-hero
           className="inline-flex items-center gap-2.5 rounded-full border border-steel bg-void/40 px-4 py-2 font-mono text-[0.6rem] tracking-widest text-ghost/90 backdrop-blur sm:text-[0.65rem]"

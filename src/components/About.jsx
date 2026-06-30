@@ -108,19 +108,6 @@ export default function About() {
               </span>
             ))}
           </div>
-
-          <div data-about className="flex flex-col gap-3">
-            <p className="font-mono text-xs tracking-widest text-signal">
-              OFF THE CLOCK
-            </p>
-            <p className="max-w-xl font-sans text-muted">
-              Outside of engineering, I am a huge basketball enthusiast: I play
-              whenever I can and watch even more. I support the Boston Celtics,
-              Connecticut Sun, and of course the Duke Blue Devils. I also train
-              Brazilian Jiu-Jitsu, am a huge cinephile, challenge my friends in
-              chess, and enjoy old-school hip-hop.
-            </p>
-          </div>
         </div>
 
         {/* Portrait + Credentials */}

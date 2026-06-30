@@ -12,7 +12,7 @@ const CATEGORIES = [
   },
   {
     label: "PROGRAMMING",
-    skills: ["Python", "JavaScript", "C", "Java", "SwiftUI", "Arduino"],
+    skills: ["Python", "JavaScript", "Java", "SwiftUI", "Arduino"],
   },
   {
     label: "RESEARCH METHODS",
