@@ -1,0 +1,162 @@
+{
+    "asset": {
+        "generator": "SOLIDWORKSGLTF",
+        "version": "2.0"
+    },
+    "scene": 0,
+    "scenes": [
+        {
+            "name": "Default",
+            "nodes": [
+                0,
+                1
+            ]
+        }
+    ],
+    "nodes": [
+        {
+            "matrix": [
+                -0.39165088957418986,
+                -0.7996371470104446,
+                0.4551812977449119,
+                0.0,
+                -0.9049502244453675,
+                0.424202224665657,
+                -0.03342998451968244,
+                0.0,
+                -0.16635706168367012,
+                -0.42500930073317683,
+                -0.8897709943116102,
+                0.0,
+                -0.07015985985718835,
+                -0.17085200433858477,
+                -0.37189430836272436,
+                1.0
+            ],
+            "camera": 0,
+            "name": "current camera"
+        },
+        {
+            "mesh": 0,
+            "name": "steering_sensor_mount_new"
+        }
+    ],
+    "cameras": [
+        {
+            "type": "orthographic",
+            "orthographic": {
+                "xmag": 0.10539556438584996,
+                "ymag": 0.0814420270254295,
+                "zfar": 0.52574885046316,
+                "znear": 0.34011945293949186
+            }
+        }
+    ],
+    "meshes": [
+        {
+            "primitives": [
+                {
+                    "attributes": {
+                        "POSITION": 1,
+                        "NORMAL": 2
+                    },
+                    "indices": 0,
+                    "material": 0,
+                    "mode": 4
+                }
+            ]
+        }
+    ],
+    "accessors": [
+        {
+            "bufferView": 0,
+            "byteOffset": 0,
+            "componentType": 5125,
+            "count": 6972,
+            "type": "SCALAR",
+            "min": [
+                0
+            ],
+            "max": [
+                3161
+            ]
+        },
+        {
+            "bufferView": 1,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 3162,
+            "type": "VEC3",
+            "min": [
+                -0.030353376641869545,
+                -0.05025000125169754,
+                -0.038040000945329666
+            ],
+            "max": [
+                0.023840000852942467,
+                0.05025000125169754,
+                0.009619999676942825
+            ]
+        },
+        {
+            "bufferView": 2,
+            "byteOffset": 0,
+            "componentType": 5126,
+            "count": 3162,
+            "type": "VEC3",
+            "min": [
+                -1.0,
+                -1.0,
+                -1.0
+            ],
+            "max": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        }
+    ],
+    "materials": [
+        {
+            "name": "defaultplastic",
+            "pbrMetallicRoughness": {
+                "baseColorFactor": [
+                    0.5989418101001601,
+                    0.6455552910764322,
+                    0.8591735777059335,
+                    1.0
+                ],
+                "metallicFactor": 0.0,
+                "roughnessFactor": 0.16999999880790712
+            }
+        }
+    ],
+    "bufferViews": [
+        {
+            "buffer": 0,
+            "byteOffset": 0,
+            "byteLength": 27888,
+            "target": 34963
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 27888,
+            "byteLength": 37944,
+            "byteStride": 12,
+            "target": 34962
+        },
+        {
+            "buffer": 0,
+            "byteOffset": 65832,
+            "byteLength": 37944,
+            "byteStride": 12,
+            "target": 34962
+        }
+    ],
+    "buffers": [
+        {
+            "uri": "steering_sensor_mount_new.bin",
+            "byteLength": 103776
+        }
+    ]
+}

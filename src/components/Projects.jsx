@@ -6,8 +6,6 @@ import {
   FileText,
   X,
   ArrowUpRight,
-  Link2,
-  Check,
   Box,
 } from "lucide-react";
 import ModelViewer from "./ModelViewer.jsx";
@@ -162,7 +160,7 @@ function MediaCarousel({ items, splitLayout = false }) {
 /* Project modal — case-study writeup OR a focused 3D model view       */
 /* ------------------------------------------------------------------ */
 function ProjectModal({ project, mode = "study", onClose, onMode }) {
-  const [copied, setCopied] = useState(false);
+  const [modelIndex, setModelIndex] = useState(0);
 
   useEffect(() => {
     if (!project) return undefined;
@@ -178,22 +176,14 @@ function ProjectModal({ project, mode = "study", onClose, onMode }) {
     };
   }, [project, onClose]);
 
-  useEffect(() => setCopied(false), [project]);
+  useEffect(() => setModelIndex(0), [project]);
 
   if (!project) return null;
 
-  const isModel = mode === "model" && Boolean(project.model);
-
-  const copyLink = async () => {
-    const url = `${window.location.origin}${window.location.pathname}#${project.id}`;
-    try {
-      await navigator.clipboard.writeText(url);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      /* clipboard unavailable */
-    }
-  };
+  const models = project.models ?? (project.model ? [project.model] : []);
+  const hasModel = models.length > 0;
+  const activeModel = models[Math.min(modelIndex, models.length - 1)];
+  const isModel = mode === "model" && hasModel;
 
   return (
     <div
@@ -219,11 +209,33 @@ function ProjectModal({ project, mode = "study", onClose, onMode }) {
         {/* Top visual — interactive model in 3D mode, photo carousel otherwise */}
         {isModel ? (
           <div className="relative h-[55vh] min-h-[340px] w-full bg-gradient-to-b from-iron to-void">
-            <ModelViewer src={project.model.src} alt={project.model.alt} />
+            <ModelViewer
+              key={activeModel.src}
+              src={activeModel.src}
+              alt={activeModel.alt}
+            />
             <span className="absolute left-4 top-4 z-10 flex items-center gap-2 rounded-full bg-void/70 px-3 py-1.5 font-mono text-[0.6rem] tracking-widest text-signal backdrop-blur">
               <Box size={13} />
               INTERACTIVE 3D MODEL
             </span>
+            {models.length > 1 && (
+              <div className="absolute bottom-4 left-4 z-10 flex flex-wrap gap-1.5">
+                {models.map((m, i) => (
+                  <button
+                    key={m.src}
+                    type="button"
+                    onClick={() => setModelIndex(i)}
+                    className={`rounded-full border px-3.5 py-2 font-mono text-[0.65rem] tracking-widest backdrop-blur transition-colors ${
+                      i === modelIndex
+                        ? "border-signal bg-signal text-void"
+                        : "border-steel bg-void/80 text-ghost hover:border-signal hover:text-signal"
+                    }`}
+                  >
+                    {m.label ?? `MODEL ${i + 1}`}
+                  </button>
+                ))}
+              </div>
+            )}
             <span className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full bg-void/70 px-3 py-1.5 font-mono text-[0.6rem] tracking-widest text-muted backdrop-blur">
               DRAG TO ROTATE · SCROLL TO ZOOM
             </span>
@@ -248,39 +260,31 @@ function ProjectModal({ project, mode = "study", onClose, onMode }) {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3">
-            <button
-              type="button"
-              onClick={copyLink}
-              className="inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-void px-3.5 py-2 font-mono text-[0.6rem] tracking-widest text-ghost transition-colors hover:border-signal hover:text-signal"
-            >
-              {copied ? <Check size={13} /> : <Link2 size={13} />}
-              {copied ? "LINK COPIED" : "COPY LINK TO THIS PROJECT"}
-            </button>
-
-            {/* Cross-navigation between the two views */}
-            {isModel
-              ? project.caseStudy && (
-                  <button
-                    type="button"
-                    onClick={() => onMode?.("study")}
-                    className="inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-void px-3.5 py-2 font-mono text-[0.6rem] tracking-widest text-ghost transition-colors hover:border-signal hover:text-signal"
-                  >
-                    READ FULL CASE STUDY
-                    <ArrowUpRight size={13} />
-                  </button>
-                )
-              : project.model && (
-                  <button
-                    type="button"
-                    onClick={() => onMode?.("model")}
-                    className="inline-flex w-fit items-center gap-2 rounded-full border border-signal/60 bg-signal/10 px-3.5 py-2 font-mono text-[0.6rem] tracking-widest text-signal transition-colors hover:bg-signal/20"
-                  >
-                    <Box size={13} />
-                    EXPLORE IN 3D
-                  </button>
-                )}
-          </div>
+          {((isModel && project.caseStudy) || (!isModel && hasModel)) && (
+            <div className="flex flex-wrap items-center gap-3">
+              {isModel
+                ? project.caseStudy && (
+                    <button
+                      type="button"
+                      onClick={() => onMode?.("study")}
+                      className="inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-void px-3.5 py-2 font-mono text-[0.6rem] tracking-widest text-ghost transition-colors hover:border-signal hover:text-signal"
+                    >
+                      READ FULL CASE STUDY
+                      <ArrowUpRight size={13} />
+                    </button>
+                  )
+                : hasModel && (
+                    <button
+                      type="button"
+                      onClick={() => onMode?.("model")}
+                      className="inline-flex w-fit items-center gap-2 rounded-full border border-signal/60 bg-signal/10 px-3.5 py-2 font-mono text-[0.6rem] tracking-widest text-signal transition-colors hover:bg-signal/20"
+                    >
+                      <Box size={13} />
+                      EXPLORE IN 3D
+                    </button>
+                  )}
+            </div>
+          )}
 
           {!isModel && project.caseStudy && (
             <div className="flex flex-col gap-5 border-t border-steel pt-6">
@@ -688,8 +692,92 @@ const PROJECTS = [
     extra: <KneeBraceDiagram />,
   },
   {
+    id: "steering-sensor-mount",
+    label: "02 / MOTORSPORTS",
+    title: "Steering Angle Sensor Mount",
+    subtitle: "Clamped to the rack. Toleranced to fit.",
+    date: "DUKE MOTORSPORTS — 2026",
+    caseStudy: [
+      {
+        h: "THE CHALLENGE",
+        p: "Duke Motorsports needed to log steering angle on the car. A 360° Hall-effect angle sensor (5V supply, 0–5V output) had to be held rigidly against the steering rack and coupled to its rotation, surviving the vibration of a running FSAE car — without machining anything on the rack itself.",
+      },
+      {
+        h: "THE APPROACH",
+        p: "I designed a two-piece clamshell mount in SolidWorks that wraps the steering rack and cradles the sensor. Every critical dimension is driven by global variables and tolerances: the clamp bores are sized to the rack and sensor diameters, and the fastener holes are toleranced for M4 and M3 bolts and nuts so hardware seats with the right clearance and clamping fit. Change a diameter and the mount re-fits.",
+      },
+      {
+        h: "THE OUTCOME",
+        p: "A 3D-printed mount that clamps onto the rack and holds the sensor in place on the car — printed, bolted together with M4/M3 hardware, and installed on the chassis.",
+      },
+    ],
+    body: [
+      "A 3D-printed mount for Duke Motorsports that fixes a 360° Hall-effect steering-angle sensor (5V supply, 0–5V output) to the car's steering rack. The two-piece clamshell wraps the rack and holds the sensor coupled to its rotation, so steering input can be logged without modifying the rack.",
+      "The whole part is driven by tolerances and global variables: the clamp bores are sized to the rack and sensor diameters, and the fastener holes are toleranced to fit M4 and M3 bolts and nuts — clearance where hardware slides through, a tight fit where it must clamp. Printed, assembled, and mounted on the car.",
+    ],
+    tags: [
+      "SolidWorks",
+      "Tolerance Analysis",
+      "Design Variables",
+      "3D Printing",
+      "Sensor Integration",
+    ],
+    models: [
+      {
+        src: "/models/steering-mount/steering_sensor_mount_new.gltf",
+        alt: "Interactive 3D model of the steering angle sensor mount — two clamshell halves with sensor bore and M4/M3 fastener holes",
+        label: "MOUNT",
+      },
+      {
+        src: "/models/steering-rack/real_steering_rack.gltf",
+        alt: "Interactive 3D model of the sensor mount clamped around the full steering rack assembly with tie-rod ends",
+        label: "ON THE RACK",
+      },
+    ],
+    media: [
+      {
+        type: "image",
+        src: "/projects/steering-mount-rack-1.png",
+        alt: "SolidWorks assembly of the sensor mount clamped around the middle of the full steering rack, with tie-rod ends at each side",
+        caption: "CAD assembly — the mount clamped to the center of the steering rack, sensor seated on top.",
+      },
+      {
+        type: "image",
+        src: "/projects/steering-mount-rack-2.png",
+        alt: "Angled SolidWorks view showing the sensor drum and shaft protruding from the mount on the steering rack",
+        caption: "Sensor coupled to the rack — the 360° angle sensor registers steering rotation.",
+      },
+      {
+        type: "image",
+        src: "/projects/steering-mount-only.png",
+        alt: "SolidWorks view of the two-piece clamshell mount by itself, showing the sensor bore and corner fastener holes",
+        caption: "Two-piece clamshell — sensor bore in the center, M4/M3 fastener holes at the corners.",
+      },
+      {
+        type: "image",
+        src: "/projects/steering-mount-real-1.jpg",
+        alt: "The 3D-printed yellow mount body and its separate curved rack-clamp half on a workbench",
+        caption: "Printed in PLA — the main body and the curved rack-clamp half before assembly.",
+      },
+      {
+        type: "image",
+        src: "/projects/steering-mount-real-2.jpg",
+        alt: "The assembled printed mount clamped around the polished aluminum steering rack, installed in the car chassis with the sensor wired below",
+        caption: "Installed on the car — clamped around the rack with M4/M3 hardware, sensor wired in.",
+      },
+      {
+        type: "image",
+        src: "/projects/steering-mount-real-3.jpg",
+        alt: "Another angle of the printed mount clamped on the steering rack in the chassis, sensor and wiring visible underneath",
+        caption: "Holding the sensor against the rack, mounted in the chassis.",
+      },
+    ],
+    imageLeft: false,
+    extra: null,
+  },
+  {
     id: "happy-meal-toy",
-    label: "02 / CONSUMER PRODUCT",
+    label: "03 / CONSUMER PRODUCT",
     title: "Happy Meal Toy — Bobsled Bonanza",
     subtitle: "Consumer constraints. Engineering precision.",
     date: "DESIGN CHALLENGE — MAR 2026",
@@ -753,12 +841,12 @@ const PROJECTS = [
         caption: "The team at the design showcase.",
       },
     ],
-    imageLeft: false,
+    imageLeft: true,
     extra: <ExplodedView />,
   },
   {
     id: "sunflower-sheller",
-    label: "03 / MECHANISM DESIGN",
+    label: "04 / MECHANISM DESIGN",
     title: "Sunflower Shelling Machine",
     subtitle: "Crack the shell. Spare the kernel.",
     date: "EGR 121 — FEB 2026",
@@ -794,12 +882,12 @@ const PROJECTS = [
       src: "/models/sunflower/Grinder_Assembly.gltf",
       alt: "Interactive 3D model of the sunflower sheller grinder assembly — dual rollers, crank, and funnel",
     },
-    imageLeft: true,
+    imageLeft: false,
     extra: <GearMechanism />,
   },
   {
     id: "cd-display-case",
-    label: "04 / TOLERANCE ANALYSIS",
+    label: "05 / TOLERANCE ANALYSIS",
     title: "CD Display Case",
     subtitle: "Nine CDs. One millimeter of clearance.",
     date: "PERSONAL PROJECT",
@@ -840,13 +928,13 @@ const PROJECTS = [
       src: "/models/cd-display/Full_CD_Display_Case_Assembly.gltf",
       alt: "Interactive 3D model of the CD display case assembly — four interlocking panels with mounting pins",
     },
-    imageLeft: false,
+    imageLeft: true,
     extra: <CDCaseVariables />,
     visualExtra: <CDCaseDiagram />,
   },
   {
     id: "robocop-helmet",
-    label: "05 / SURFACE MODELING",
+    label: "06 / SURFACE MODELING",
     title: "Toy RoboCop Helmet",
     subtitle: "First CAD project. Built for my brother.",
     date: "PERSONAL PROJECT",
@@ -903,7 +991,7 @@ const PROJECTS = [
         caption: "The 1987 film reference the silhouette was modeled from.",
       },
     ],
-    imageLeft: true,
+    imageLeft: false,
     extra: null,
   },
 ];
@@ -972,7 +1060,7 @@ export default function Projects() {
           The Build Log
         </h2>
         <p className="mt-4 font-display text-xl italic text-muted">
-          Five projects, written up the way I'd hand them off — the problem, the
+          Six projects, written up the way I'd hand them off — the problem, the
           decisions, and the numbers behind each one.
         </p>
 
@@ -1041,7 +1129,10 @@ export default function Projects() {
                     {para}
                   </p>
                 ))}
-                {(project.caseStudy || project.link || project.model) && (
+                {(project.caseStudy ||
+                  project.link ||
+                  project.model ||
+                  project.models) && (
                   <div className="flex flex-wrap items-center gap-3">
                     {project.caseStudy && (
                       <button
@@ -1053,7 +1144,7 @@ export default function Projects() {
                         <ArrowUpRight size={14} />
                       </button>
                     )}
-                    {project.model && (
+                    {(project.model || project.models) && (
                       <button
                         type="button"
                         onClick={() => openProject(project, "model")}

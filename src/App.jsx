@@ -8,8 +8,6 @@ import Experience from "./components/Experience.jsx";
 import Projects from "./components/Projects.jsx";
 import Skills from "./components/Skills.jsx";
 import OffTheClock from "./components/OffTheClock.jsx";
-import Motorsports from "./components/Motorsports.jsx";
-import Extracurriculars from "./components/Extracurriculars.jsx";
 import Contact from "./components/Contact.jsx";
 import Footer from "./components/Footer.jsx";
 
@@ -26,8 +24,6 @@ export default function App() {
         <Projects />
         <Skills />
         <OffTheClock />
-        <Motorsports />
-        <Extracurriculars />
         <Contact />
       </main>
       <Footer />
