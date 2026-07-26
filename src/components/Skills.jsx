@@ -4,7 +4,7 @@ import gsap from "gsap";
 const CATEGORIES = [
   {
     label: "CAD & SIMULATION",
-    skills: ["SolidWorks", "Onshape", "CFD", "FEA"],
+    skills: ["SolidWorks", "Onshape", "CFD", "FEA", "Optimum Kinematics"],
   },
   {
     label: "MANUFACTURING",
@@ -24,8 +24,8 @@ const CATEGORIES = [
     ],
   },
   {
-    label: "SOFTWARE",
-    skills: ["FastAPI", "Photoshop", "Microsoft Office"],
+    label: "SOFTWARE & DESIGN",
+    skills: ["FastAPI", "SwiftData", "Figma", "Photoshop", "Adobe Illustrator"],
   },
   {
     label: "LANGUAGES",

@@ -3,8 +3,8 @@ import gsap from "gsap";
 
 const STATS = [
   { value: 3.96, label: "GPA", decimals: 2 },
-  { value: 5, label: "Real-World Projects", decimals: 0, suffix: "+" },
-  { value: 5, label: "Engineering Experiences", decimals: 0 },
+  { value: 7, label: "Real-World Projects", decimals: 0 },
+  { value: 6, label: "Engineering Experiences", decimals: 0 },
   { value: 5, label: "Programming Languages", decimals: 0 },
   { value: 1, label: "IEEE Publication", decimals: 0 },
 ];
@@ -12,7 +12,7 @@ const STATS = [
 const CREDENTIALS = [
   { label: "UNIVERSITY", value: "Duke University, Durham NC" },
   { label: "DEGREE", value: "BSE Mechanical Engineering" },
-  { label: "CERTIFICATE", value: "Robotics & Automation" },
+  { label: "CERTIFICATE", value: "Aerospace Engineering" },
   { label: "EXPECTED GRADUATION", value: "May 2029" },
   { label: "LANGUAGES", value: "English · Spanish · Hebrew" },
 ];
@@ -84,11 +84,11 @@ export default function About() {
           </p>
           <p data-about className="max-w-xl font-sans text-muted">
             Rising sophomore at Duke University studying Mechanical Engineering
-            with a Certificate in Robotics &amp; Automation. I work across the
-            full engineering stack — from CAD and FEA in SolidWorks to firmware
-            in Arduino and full-stack mobile apps in SwiftUI. Currently racing
-            with Duke Motorsports, researching biomechanics, and building
-            hardware that solves real problems.
+            with a Certificate in Aerospace Engineering. I work across the full
+            engineering stack — from CAD and FEA in SolidWorks to firmware in
+            Arduino and full-stack mobile apps in SwiftUI. Currently racing with
+            Duke Motorsports, researching biomechanics, and building hardware
+            that solves real problems.
           </p>
           <div data-about className="flex flex-wrap gap-3">
             {STATS.map((stat) => (

@@ -1,160 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import {
-  ChevronLeft,
-  ChevronRight,
-  FileText,
-  X,
-  ArrowUpRight,
-  Box,
-} from "lucide-react";
+import { FileText, X, ArrowUpRight, Box } from "lucide-react";
 import ModelViewer from "./ModelViewer.jsx";
+import MediaCarousel from "./MediaCarousel.jsx";
+import { PULSE_MEDIA, PULSE_WORK } from "../data/pulse.js";
+import {
+  STEERING_MOUNT_MEDIA,
+  STEERING_MOUNT_WORK,
+} from "../data/steeringMount.js";
+import { WorkPanel, workModalMaxWidth } from "./WorkPanels.jsx";
 
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-/* ------------------------------------------------------------------ */
-/* Media carousel — every slide fits (object-contain) over a blurred   */
-/* backdrop of itself, so CAD renders and photos all sit cleanly.      */
-/* ------------------------------------------------------------------ */
-function MediaCarousel({ items, splitLayout = false }) {
-  const [index, setIndex] = useState(0);
-  const [autoplay, setAutoplay] = useState(true);
-  const [inView, setInView] = useState(false);
-  const containerRef = useRef(null);
-  const hasLooped = useRef(false);
-  const count = items.length;
-
-  // Only begin once the carousel is scrolled into view.
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return undefined;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.35 }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
-
-  // Auto-advance every 3s, in view, until it stops or the visitor takes over.
-  // After the last slide, wrap back to the first slide for one final beat.
-  useEffect(() => {
-    if (!autoplay || !inView || count <= 1 || prefersReducedMotion())
-      return undefined;
-    const id = setInterval(() => {
-      setIndex((i) => {
-        if (i >= count - 1) {
-          hasLooped.current = true;
-          return 0;
-        }
-        return i + 1;
-      });
-    }, 3000);
-    return () => clearInterval(id);
-  }, [autoplay, inView, count]);
-
-  // Once it has wrapped back to the first slide, stop and rest there.
-  useEffect(() => {
-    if (hasLooped.current && index === 0) setAutoplay(false);
-  }, [index]);
-
-  const goTo = (i) => {
-    setAutoplay(false);
-    setIndex((i + count) % count);
-  };
-
-  return (
-    <div
-      ref={containerRef}
-      className={`flex w-full flex-col bg-void ${splitLayout ? "h-full min-h-0" : ""}`}
-    >
-      {/* Fixed-aspect frame — or flex-fill when stacked above a diagram (65/35 split) */}
-      <div
-        className={`relative w-full overflow-hidden ${
-          splitLayout ? "min-h-0 flex-1" : "aspect-[4/3] sm:aspect-[3/2]"
-        }`}
-      >
-        {items.map((item, i) => (
-          <div
-            key={item.src}
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              i === index ? "opacity-100" : "pointer-events-none opacity-0"
-            }`}
-            aria-hidden={i === index ? undefined : true}
-          >
-            <img
-              src={item.src}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl"
-            />
-            <div className="absolute inset-0 bg-void/40" />
-            <img
-              src={item.src}
-              alt={item.alt}
-              loading="lazy"
-              className="absolute inset-0 h-full w-full object-contain p-5 sm:p-8"
-            />
-          </div>
-        ))}
-
-        {count > 1 && (
-          <>
-            <button
-              type="button"
-              onClick={() => goTo(index - 1)}
-              aria-label="Previous image"
-              className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-steel bg-void/60 p-2 text-ghost backdrop-blur transition-colors hover:bg-void hover:text-signal"
-            >
-              <ChevronLeft size={18} />
-            </button>
-            <button
-              type="button"
-              onClick={() => goTo(index + 1)}
-              aria-label="Next image"
-              className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-steel bg-void/60 p-2 text-ghost backdrop-blur transition-colors hover:bg-void hover:text-signal"
-            >
-              <ChevronRight size={18} />
-            </button>
-
-            <div className="absolute right-3 top-3 z-10 rounded-full bg-void/60 px-2.5 py-1 font-mono text-[0.6rem] tracking-widest text-ghost backdrop-blur">
-              {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
-            </div>
-
-            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
-              {items.map((item, i) => (
-                <button
-                  key={item.src}
-                  type="button"
-                  onClick={() => goTo(i)}
-                  aria-label={`Go to image ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all ${
-                    i === index ? "w-5 bg-signal" : "w-1.5 bg-ghost/40 hover:bg-ghost/70"
-                  }`}
-                />
-              ))}
-            </div>
-          </>
-        )}
-      </div>
-
-      {items[index]?.caption && (
-        <div className="flex shrink-0 justify-center px-3 pb-3 pt-2.5">
-          <p className="rounded-full border border-steel/80 bg-iron/95 px-4 py-2 text-center font-mono text-[0.78rem] leading-snug tracking-wide text-ghost shadow-lg shadow-void/70 backdrop-blur-sm">
-            {items[index].caption}
-          </p>
-        </div>
-      )}
-    </div>
-  );
-}
 
 /* ------------------------------------------------------------------ */
 /* Project modal — case-study writeup OR a focused 3D model view       */
@@ -184,6 +42,34 @@ function ProjectModal({ project, mode = "study", onClose, onMode }) {
   const hasModel = models.length > 0;
   const activeModel = models[Math.min(modelIndex, models.length - 1)];
   const isModel = mode === "model" && hasModel;
+  const sharedWorkStudy = !isModel && project.work;
+
+  if (sharedWorkStudy) {
+    return (
+      <div
+        className="fixed inset-0 z-[80] flex overflow-y-auto bg-void/80 p-4 backdrop-blur-md sm:p-8"
+        onClick={onClose}
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${project.title} case study`}
+      >
+        <div
+          className={`relative m-auto w-full ${workModalMaxWidth(project.work)} overflow-hidden rounded-[2rem] border border-steel bg-iron`}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close case study"
+            className="absolute right-4 top-4 z-20 flex h-10 w-10 items-center justify-center rounded-full border border-steel bg-void/70 text-ghost backdrop-blur transition-colors hover:border-signal hover:text-signal"
+          >
+            <X size={18} />
+          </button>
+          <WorkPanel work={project.work} />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -241,7 +127,13 @@ function ProjectModal({ project, mode = "study", onClose, onMode }) {
             </span>
           </div>
         ) : (
-          project.media && <MediaCarousel items={project.media} />
+          project.media && (
+            <MediaCarousel
+              items={project.media}
+              aspect={project.mediaAspect}
+              pad={project.mediaPad}
+            />
+          )
         )}
 
         <div className="flex flex-col gap-6 p-8 sm:p-10">
@@ -697,20 +589,7 @@ const PROJECTS = [
     title: "Steering Angle Sensor Mount",
     subtitle: "Clamped to the rack. Toleranced to fit.",
     date: "DUKE MOTORSPORTS — 2026",
-    caseStudy: [
-      {
-        h: "THE CHALLENGE",
-        p: "Duke Motorsports needed to log steering angle on the car. A 360° Hall-effect angle sensor (5V supply, 0–5V output) had to be held rigidly against the steering rack and coupled to its rotation, surviving the vibration of a running FSAE car — without machining anything on the rack itself.",
-      },
-      {
-        h: "THE APPROACH",
-        p: "I designed a two-piece clamshell mount in SolidWorks that wraps the steering rack and cradles the sensor. Every critical dimension is driven by global variables and tolerances: the clamp bores are sized to the rack and sensor diameters, and the fastener holes are toleranced for M4 and M3 bolts and nuts so hardware seats with the right clearance and clamping fit. Change a diameter and the mount re-fits.",
-      },
-      {
-        h: "THE OUTCOME",
-        p: "A 3D-printed mount that clamps onto the rack and holds the sensor in place on the car — printed, bolted together with M4/M3 hardware, and installed on the chassis.",
-      },
-    ],
+    caseStudy: STEERING_MOUNT_WORK.blocks,
     body: [
       "A 3D-printed mount for Duke Motorsports that fixes a 360° Hall-effect steering-angle sensor (5V supply, 0–5V output) to the car's steering rack. The two-piece clamshell wraps the rack and holds the sensor coupled to its rotation, so steering input can be logged without modifying the rack.",
       "The whole part is driven by tolerances and global variables: the clamp bores are sized to the rack and sensor diameters, and the fastener holes are toleranced to fit M4 and M3 bolts and nuts — clearance where hardware slides through, a tight fit where it must clamp. Printed, assembled, and mounted on the car.",
@@ -734,50 +613,37 @@ const PROJECTS = [
         label: "ON THE RACK",
       },
     ],
-    media: [
-      {
-        type: "image",
-        src: "/projects/steering-mount-rack-1.png",
-        alt: "SolidWorks assembly of the sensor mount clamped around the middle of the full steering rack, with tie-rod ends at each side",
-        caption: "CAD assembly — the mount clamped to the center of the steering rack, sensor seated on top.",
-      },
-      {
-        type: "image",
-        src: "/projects/steering-mount-rack-2.png",
-        alt: "Angled SolidWorks view showing the sensor drum and shaft protruding from the mount on the steering rack",
-        caption: "Sensor coupled to the rack — the 360° angle sensor registers steering rotation.",
-      },
-      {
-        type: "image",
-        src: "/projects/steering-mount-only.png",
-        alt: "SolidWorks view of the two-piece clamshell mount by itself, showing the sensor bore and corner fastener holes",
-        caption: "Two-piece clamshell — sensor bore in the center, M4/M3 fastener holes at the corners.",
-      },
-      {
-        type: "image",
-        src: "/projects/steering-mount-real-1.jpg",
-        alt: "The 3D-printed yellow mount body and its separate curved rack-clamp half on a workbench",
-        caption: "Printed in PLA — the main body and the curved rack-clamp half before assembly.",
-      },
-      {
-        type: "image",
-        src: "/projects/steering-mount-real-2.jpg",
-        alt: "The assembled printed mount clamped around the polished aluminum steering rack, installed in the car chassis with the sensor wired below",
-        caption: "Installed on the car — clamped around the rack with M4/M3 hardware, sensor wired in.",
-      },
-      {
-        type: "image",
-        src: "/projects/steering-mount-real-3.jpg",
-        alt: "Another angle of the printed mount clamped on the steering rack in the chassis, sensor and wiring visible underneath",
-        caption: "Holding the sensor against the rack, mounted in the chassis.",
-      },
-    ],
+    media: STEERING_MOUNT_MEDIA,
     imageLeft: false,
     extra: null,
   },
   {
+    id: "pulse-app",
+    label: "03 / SOFTWARE",
+    title: "Pulse — Wearable Health Research App",
+    subtitle: "The data only flows if people open the app.",
+    date: "DUKE OIT — MAY–JUL 2026",
+    work: PULSE_WORK,
+    body: [
+      "A SwiftUI research app that collects wearable health data through Apple HealthKit and streams it to a shared Duke research database. The pipeline already worked when I joined; the problem was that iOS kills an app's background tasks after roughly a week unopened, so any participant who stopped launching it silently stopped contributing data.",
+      "I owned three of the four engagement features end to end: a fitness dashboard with customizable goals and 7/30-day HealthKit trend charts, a Duke Recreation class browser wired to the university fitness API with in-app registration, and 2048 and Minesweeper rebuilt in SwiftUI. I also built frontend for the group leaderboard and photo feed, and the backend behind the leaderboards.",
+    ],
+    tags: [
+      "SwiftUI",
+      "SwiftData",
+      "FastAPI",
+      "Apple HealthKit",
+      "Duke Fitness API",
+    ],
+    media: PULSE_MEDIA,
+    mediaAspect: "aspect-[1/1]",
+    mediaPad: "p-4 sm:p-6",
+    imageLeft: true,
+    extra: null,
+  },
+  {
     id: "happy-meal-toy",
-    label: "03 / CONSUMER PRODUCT",
+    label: "04 / CONSUMER PRODUCT",
     title: "Happy Meal Toy — Bobsled Bonanza",
     subtitle: "Consumer constraints. Engineering precision.",
     date: "DESIGN CHALLENGE — MAR 2026",
@@ -841,12 +707,12 @@ const PROJECTS = [
         caption: "The team at the design showcase.",
       },
     ],
-    imageLeft: true,
+    imageLeft: false,
     extra: <ExplodedView />,
   },
   {
     id: "sunflower-sheller",
-    label: "04 / MECHANISM DESIGN",
+    label: "05 / MECHANISM DESIGN",
     title: "Sunflower Shelling Machine",
     subtitle: "Crack the shell. Spare the kernel.",
     date: "EGR 121 — FEB 2026",
@@ -882,12 +748,12 @@ const PROJECTS = [
       src: "/models/sunflower/Grinder_Assembly.gltf",
       alt: "Interactive 3D model of the sunflower sheller grinder assembly — dual rollers, crank, and funnel",
     },
-    imageLeft: false,
+    imageLeft: true,
     extra: <GearMechanism />,
   },
   {
     id: "cd-display-case",
-    label: "05 / TOLERANCE ANALYSIS",
+    label: "06 / TOLERANCE ANALYSIS",
     title: "CD Display Case",
     subtitle: "Nine CDs. One millimeter of clearance.",
     date: "PERSONAL PROJECT",
@@ -928,13 +794,13 @@ const PROJECTS = [
       src: "/models/cd-display/Full_CD_Display_Case_Assembly.gltf",
       alt: "Interactive 3D model of the CD display case assembly — four interlocking panels with mounting pins",
     },
-    imageLeft: true,
+    imageLeft: false,
     extra: <CDCaseVariables />,
     visualExtra: <CDCaseDiagram />,
   },
   {
     id: "robocop-helmet",
-    label: "06 / SURFACE MODELING",
+    label: "07 / SURFACE MODELING",
     title: "Toy RoboCop Helmet",
     subtitle: "First CAD project. Built for my brother.",
     date: "PERSONAL PROJECT",
@@ -991,7 +857,7 @@ const PROJECTS = [
         caption: "The 1987 film reference the silhouette was modeled from.",
       },
     ],
-    imageLeft: false,
+    imageLeft: true,
     extra: null,
   },
 ];
@@ -1060,8 +926,8 @@ export default function Projects() {
           The Build Log
         </h2>
         <p className="mt-4 font-display text-xl italic text-muted">
-          Six projects, written up the way I'd hand them off — the problem, the
-          decisions, and the numbers behind each one.
+          Seven projects, written up the way I'd hand them off — the problem,
+          the decisions, and the numbers behind each one.
         </p>
 
         <div className="mt-20 flex flex-col gap-20">
@@ -1090,6 +956,8 @@ export default function Projects() {
                     <MediaCarousel
                       items={project.media}
                       splitLayout={Boolean(project.visualExtra)}
+                      aspect={project.mediaAspect}
+                      pad={project.mediaPad}
                     />
                   </div>
                 ) : (
@@ -1130,11 +998,12 @@ export default function Projects() {
                   </p>
                 ))}
                 {(project.caseStudy ||
+                  project.work ||
                   project.link ||
                   project.model ||
                   project.models) && (
                   <div className="flex flex-wrap items-center gap-3">
-                    {project.caseStudy && (
+                    {(project.caseStudy || project.work) && (
                       <button
                         type="button"
                         onClick={() => openProject(project, "study")}

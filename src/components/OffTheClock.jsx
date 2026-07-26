@@ -15,17 +15,35 @@ const PHOTOS = [
 function PhotoSlideshow() {
   const [index, setIndex] = useState(0);
   const [autoplay, setAutoplay] = useState(true);
+  const [inView, setInView] = useState(false);
+  const containerRef = useRef(null);
   const count = PHOTOS.length;
 
   useEffect(() => {
-    if (!autoplay || count <= 1) return undefined;
+    const el = containerRef.current;
+    if (!el) return undefined;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.35 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!autoplay || !inView || count <= 1) return undefined;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
       return undefined;
     const id = setInterval(() => {
       setIndex((i) => (i + 1) % count);
     }, 3000);
     return () => clearInterval(id);
-  }, [autoplay, count]);
+  }, [autoplay, inView, count]);
 
   const goTo = (i) => {
     setAutoplay(false);
@@ -33,7 +51,10 @@ function PhotoSlideshow() {
   };
 
   return (
-    <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] border border-steel bg-void">
+    <div
+      ref={containerRef}
+      className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] border border-steel bg-void"
+    >
       {PHOTOS.map((photo, i) => (
         <div
           key={photo.src}
@@ -133,8 +154,8 @@ export default function OffTheClock() {
             Outside of engineering, I am a huge basketball enthusiast: I play
             whenever I can and watch even more. I support the Boston Celtics,
             Connecticut Sun, and of course the Duke Blue Devils. I also train
-            Brazilian Jiu-Jitsu, am a huge cinephile, challenge my friends in
-            chess, and enjoy old-school hip-hop.
+            Brazilian Jiu-Jitsu, am a huge cinephile, make music, and enjoy
+            old-school hip-hop.
           </p>
         </div>
 
