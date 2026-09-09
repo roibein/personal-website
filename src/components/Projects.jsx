@@ -113,7 +113,7 @@ function ProjectModal({ project, mode = "study", onClose, onMode }) {
                     onClick={() => setModelIndex(i)}
                     className={`rounded-full border px-3.5 py-2 font-mono text-[0.65rem] tracking-widest backdrop-blur transition-colors ${
                       i === modelIndex
-                        ? "border-signal bg-signal text-void"
+                        ? "border-signal bg-signal text-on-signal"
                         : "border-steel bg-void/80 text-ghost hover:border-signal hover:text-signal"
                     }`}
                   >
@@ -198,7 +198,7 @@ function ProjectModal({ project, mode = "study", onClose, onMode }) {
               href={project.link.href}
               target="_blank"
               rel="noreferrer"
-              className="magnetic-btn inline-flex w-fit items-center gap-2.5 rounded-full bg-signal px-5 py-3 font-grotesk text-xs font-bold uppercase tracking-wide text-void"
+              className="magnetic-btn inline-flex w-fit items-center gap-2.5 rounded-full bg-signal px-5 py-3 font-grotesk text-xs font-bold uppercase tracking-wide text-on-signal"
             >
               <FileText size={16} />
               {project.link.label}
@@ -896,6 +896,13 @@ export default function Projects() {
     );
   };
 
+  const handleProjectContentMove = (event) => {
+    const panel = event.currentTarget;
+    const rect = panel.getBoundingClientRect();
+    panel.style.setProperty("--spot-x", `${event.clientX - rect.left}px`);
+    panel.style.setProperty("--spot-y", `${event.clientY - rect.top}px`);
+  };
+
   useEffect(() => {
     if (prefersReducedMotion()) return undefined;
     const ctx = gsap.context(() => {
@@ -937,11 +944,11 @@ export default function Projects() {
               id={project.id}
               data-spread
               style={{ scrollMarginTop: "6rem" }}
-              className="project-card grid items-stretch overflow-hidden rounded-[2.5rem] border border-steel bg-iron lg:grid-cols-2"
+              className="project-card grid items-stretch overflow-hidden rounded-[2.5rem] border border-steel bg-card lg:grid-cols-2"
             >
               {/* Visual side */}
               <div
-                className={`min-h-[260px] min-w-0 bg-void ${
+                className={`min-h-[260px] min-w-0 bg-inset ${
                   project.visualExtra
                     ? "grid h-full grid-rows-[65fr_35fr]"
                     : `flex flex-col ${project.imageLeft ? "lg:order-1" : "lg:order-2"} items-center justify-center`
@@ -974,7 +981,8 @@ export default function Projects() {
 
               {/* Content side */}
               <div
-                className={`flex min-w-0 flex-col gap-5 p-8 sm:p-12 ${
+                onMouseMove={handleProjectContentMove}
+                className={`project-card-content flex min-w-0 flex-col gap-5 p-8 sm:p-12 ${
                   project.imageLeft ? "lg:order-2" : "lg:order-1"
                 }`}
               >
@@ -1007,7 +1015,7 @@ export default function Projects() {
                       <button
                         type="button"
                         onClick={() => openProject(project, "study")}
-                        className="hover-card inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-void px-4 py-2.5 font-mono text-[0.65rem] tracking-widest text-ghost"
+                        className="hover-card inline-flex w-fit items-center gap-2 rounded-full border border-steel bg-iron px-4 py-2.5 font-mono text-[0.65rem] tracking-widest text-ghost"
                       >
                         READ CASE STUDY
                         <ArrowUpRight size={14} />
@@ -1029,7 +1037,7 @@ export default function Projects() {
                           href={project.link.href}
                           target="_blank"
                           rel="noreferrer"
-                          className="magnetic-btn inline-flex w-fit items-center gap-2.5 rounded-full bg-signal px-5 py-3 font-grotesk text-xs font-bold uppercase tracking-wide text-void"
+                          className="magnetic-btn inline-flex w-fit items-center gap-2.5 rounded-full bg-signal px-5 py-3 font-grotesk text-xs font-bold uppercase tracking-wide text-on-signal"
                         >
                           <FileText size={16} />
                           {project.link.label}
@@ -1057,7 +1065,7 @@ export default function Projects() {
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="skill-pill rounded-full border border-steel bg-void px-3.5 py-1.5 font-mono text-[0.65rem] text-ghost"
+                      className="skill-pill rounded-full border border-steel bg-iron px-3.5 py-1.5 font-mono text-[0.65rem] text-ghost"
                     >
                       {tag}
                     </span>

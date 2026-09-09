@@ -134,7 +134,7 @@ export default function Experience() {
               <article
                 key={entry.company + entry.date}
                 data-entry
-                className="hover-card relative rounded-[1.5rem] border border-steel bg-iron p-7 sm:p-9"
+                className="experience-card hover-card relative rounded-[1.5rem] border border-steel bg-iron p-7 sm:p-9"
               >
                 <span
                   aria-hidden="true"
@@ -170,7 +170,7 @@ export default function Experience() {
                   <button
                     type="button"
                     onClick={() => setActiveWork(entry.work)}
-                    className="magnetic-btn mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-signal px-5 py-3 font-grotesk text-xs font-bold uppercase tracking-wide text-void"
+                    className="magnetic-btn mt-6 inline-flex w-fit items-center gap-2.5 rounded-full bg-signal px-5 py-3 font-grotesk text-xs font-bold uppercase tracking-wide text-on-signal"
                   >
                     <FileText size={16} />
                     See Project Work

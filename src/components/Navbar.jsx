@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Menu, X, Linkedin } from "lucide-react";
+import ThemeToggle from "./ThemeToggle.jsx";
 
 const LINKS = [
   { label: "Work", href: "#work" },
@@ -87,6 +88,7 @@ export default function Navbar() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <a
             href={LINKEDIN_URL}
             target="_blank"
@@ -100,7 +102,7 @@ export default function Navbar() {
             href={RESUME_URL}
             target="_blank"
             rel="noreferrer"
-            className="magnetic-btn hidden rounded-full bg-signal px-5 py-2 font-grotesk text-xs font-bold uppercase tracking-wide text-void md:inline-block"
+            className="magnetic-btn hidden rounded-full bg-signal px-5 py-2 font-grotesk text-xs font-bold uppercase tracking-wide text-on-signal md:inline-block"
           >
             View Resume
           </a>
@@ -156,7 +158,7 @@ export default function Navbar() {
               href={RESUME_URL}
               target="_blank"
               rel="noreferrer"
-              className="rounded-full bg-signal px-7 py-3.5 font-grotesk text-sm font-bold uppercase tracking-wide text-void"
+              className="rounded-full bg-signal px-7 py-3.5 font-grotesk text-sm font-bold uppercase tracking-wide text-on-signal"
             >
               View Resume
             </a>

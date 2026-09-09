@@ -53,7 +53,7 @@ function PhotoSlideshow() {
   return (
     <div
       ref={containerRef}
-      className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] border border-steel bg-void"
+      className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] border border-steel bg-iron"
     >
       {PHOTOS.map((photo, i) => (
         <div

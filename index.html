@@ -16,8 +16,23 @@
     />
     <meta name="author" content="Roi Bein" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
-    <meta name="theme-color" content="#09090f" />
+    <meta name="theme-color" content="#e2e5eb" />
     <link rel="canonical" href="https://roibein.com/" />
+    <link rel="image_src" href="https://roibein.com/headshot.jpg" />
+
+    <!-- Apply saved theme before first paint to avoid a flash -->
+    <script>
+      try {
+        var params = new URLSearchParams(window.location.search);
+        var queryTheme = params.get("theme");
+        document.documentElement.dataset.theme =
+          queryTheme === "light" || queryTheme === "dark"
+            ? queryTheme
+            : localStorage.getItem("theme") || "light";
+      } catch (e) {
+        document.documentElement.dataset.theme = "light";
+      }
+    </script>
 
     <!-- Icons & manifest -->
     <link rel="icon" href="/favicon.ico" sizes="any" />
@@ -72,14 +87,28 @@
       rel="stylesheet"
     />
 
-    <!-- Structured data: Person -->
+    <!-- Structured data: ProfilePage wrapping Person, with the headshot
+         declared as the page's primary image so search engines prefer it
+         over the hero photo for thumbnails. -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
+        "@type": "ProfilePage",
+        "url": "https://roibein.com/",
+        "primaryImageOfPage": {
+          "@type": "ImageObject",
+          "contentUrl": "https://roibein.com/headshot.jpg",
+          "caption": "Roi Bein — Mechanical Engineering student at Duke University"
+        },
+        "mainEntity": {
         "@type": "Person",
         "name": "Roi Bein",
         "url": "https://roibein.com/",
-        "image": "https://roibein.com/headshot.jpg",
+        "image": {
+          "@type": "ImageObject",
+          "contentUrl": "https://roibein.com/headshot.jpg",
+          "caption": "Roi Bein — Mechanical Engineering student at Duke University"
+        },
         "jobTitle": "Mechanical Engineering Student",
         "description": "Mechanical engineering student at Duke University building hardware for automotive, aerospace, and medtech.",
         "email": "mailto:rb505@duke.edu",
@@ -109,6 +138,7 @@
           "https://www.linkedin.com/in/roi-bein/",
           "https://github.com/roibein"
         ]
+        }
       }
     </script>
   </head>

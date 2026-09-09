@@ -6,10 +6,13 @@ export default {
       colors: {
         void: "rgb(var(--void-rgb) / <alpha-value>)",
         iron: "rgb(var(--iron-rgb) / <alpha-value>)",
+        card: "rgb(var(--card-rgb) / <alpha-value>)",
+        inset: "rgb(var(--inset-rgb) / <alpha-value>)",
         steel: "rgb(var(--steel-rgb) / <alpha-value>)",
         signal: "rgb(var(--signal-rgb) / <alpha-value>)",
         ghost: "rgb(var(--ghost-rgb) / <alpha-value>)",
         muted: "rgb(var(--muted-rgb) / <alpha-value>)",
+        "on-signal": "rgb(var(--on-signal-rgb) / <alpha-value>)",
       },
       fontFamily: {
         grotesk: ['"Space Grotesk"', "sans-serif"],

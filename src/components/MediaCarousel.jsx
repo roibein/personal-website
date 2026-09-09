@@ -69,7 +69,7 @@ export default function MediaCarousel({
   return (
     <div
       ref={containerRef}
-      className={`flex w-full flex-col bg-void ${splitLayout ? "h-full min-h-0" : ""}`}
+      className={`flex w-full flex-col bg-inset ${splitLayout ? "h-full min-h-0" : ""}`}
     >
       {/* Fixed-aspect frame — or flex-fill when stacked above a diagram (65/35 split) */}
       <div

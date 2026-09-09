@@ -15,7 +15,7 @@ export default function MagneticButton({
     <Tag
       className={`magnetic-btn group relative inline-flex items-center justify-center overflow-hidden rounded-full px-7 py-3.5 font-grotesk text-sm font-semibold uppercase tracking-wide ${
         isSignal
-          ? "bg-signal text-void"
+          ? "bg-signal text-on-signal"
           : "border border-ghost/40 text-ghost"
       } ${className}`}
       {...props}
@@ -28,7 +28,7 @@ export default function MagneticButton({
       />
       <span
         className={`relative z-10 transition-colors duration-300 ${
-          isSignal ? "" : "group-hover:text-void"
+          isSignal ? "" : "group-hover:text-on-signal"
         }`}
       >
         {children}
