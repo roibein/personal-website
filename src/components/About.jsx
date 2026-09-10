@@ -76,12 +76,20 @@ export default function About() {
       <div className="mx-auto grid max-w-6xl gap-16 lg:grid-cols-[60fr_40fr]">
         {/* The Statement */}
         <div className="flex flex-col gap-8">
-          <p
-            data-about
-            className="font-display italic text-[clamp(2.25rem,5vw,4rem)] leading-[1.1] text-ghost"
-          >
-            I build things that move, heal, and endure.
-          </p>
+          <div>
+            <p
+              data-about
+              className="font-mono text-xs tracking-widest text-signal"
+            >
+              01 / ABOUT
+            </p>
+            <h2
+              data-about
+              className="mt-3 font-grotesk text-4xl font-bold tracking-tightest text-ghost sm:text-5xl"
+            >
+              Background
+            </h2>
+          </div>
           <p data-about className="max-w-xl font-sans text-muted">
             Rising sophomore at Duke University studying Mechanical Engineering
             with a Certificate in Aerospace Engineering. I work across the full
