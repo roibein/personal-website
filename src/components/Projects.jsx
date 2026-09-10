@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { FileText, X, ArrowUpRight, Box } from "lucide-react";
+import { FileText, X, ArrowUpRight, Box, ChevronDown } from "lucide-react";
 import ModelViewer from "./ModelViewer.jsx";
 import MediaCarousel from "./MediaCarousel.jsx";
 import { PULSE_MEDIA, PULSE_WORK } from "../data/pulse.js";
@@ -865,20 +865,31 @@ const PROJECTS = [
 /* ------------------------------------------------------------------ */
 /* Section                                                             */
 /* ------------------------------------------------------------------ */
+// Projects shown before the "More projects" button; the rest are revealed on demand.
+const INITIAL_PROJECT_COUNT = 4;
+const HIDDEN_PROJECTS = PROJECTS.slice(INITIAL_PROJECT_COUNT);
+
 export default function Projects() {
   const rootRef = useRef(null);
+  const toggleRef = useRef(null);
+  const scrollToToggleOnCollapse = useRef(false);
   const [activeProject, setActiveProject] = useState(null);
   const [modalMode, setModalMode] = useState("study");
+  const [showAll, setShowAll] = useState(false);
+
+  const visibleProjects = showAll
+    ? PROJECTS
+    : PROJECTS.slice(0, INITIAL_PROJECT_COUNT);
 
   // Open a case study from the URL hash on first load (shareable deep links).
   useEffect(() => {
     const id = window.location.hash.replace(/^#/, "");
     if (!id) return;
-    const match = PROJECTS.find((p) => p.id === id);
-    if (match) {
-      setModalMode("study");
-      setActiveProject(match);
-    }
+    const index = PROJECTS.findIndex((p) => p.id === id);
+    if (index === -1) return;
+    if (index >= INITIAL_PROJECT_COUNT) setShowAll(true);
+    setModalMode("study");
+    setActiveProject(PROJECTS[index]);
   }, []);
 
   const openProject = (project, mode = "study") => {
@@ -903,10 +914,37 @@ export default function Projects() {
     panel.style.setProperty("--spot-y", `${event.clientY - rect.top}px`);
   };
 
+  const toggleShowAll = () => {
+    setShowAll((prev) => {
+      if (prev) {
+        scrollToToggleOnCollapse.current = true;
+        const id = window.location.hash.replace(/^#/, "");
+        if (HIDDEN_PROJECTS.some((p) => p.id === id)) {
+          window.history.replaceState(
+            null,
+            "",
+            window.location.pathname + window.location.search
+          );
+        }
+      }
+      return !prev;
+    });
+  };
+
+  useEffect(() => {
+    if (showAll || !scrollToToggleOnCollapse.current || !toggleRef.current) return;
+    scrollToToggleOnCollapse.current = false;
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth";
+    toggleRef.current.scrollIntoView({ behavior, block: "center" });
+  }, [showAll]);
+
+  // Scroll-in reveal for the initial cards.
   useEffect(() => {
     if (prefersReducedMotion()) return undefined;
     const ctx = gsap.context(() => {
-      gsap.utils.toArray("[data-spread]").forEach((spread) => {
+      gsap.utils.toArray("[data-spread]:not([data-spread-extra])").forEach((spread) => {
         gsap.fromTo(
           spread,
           { y: 40, opacity: 0 },
@@ -923,6 +961,27 @@ export default function Projects() {
     return () => ctx.revert();
   }, []);
 
+  // Reveal for the cards added by "More projects" — runs only once they mount.
+  useEffect(() => {
+    if (!showAll || prefersReducedMotion()) return undefined;
+    const ctx = gsap.context(() => {
+      gsap.utils.toArray("[data-spread-extra]").forEach((spread) => {
+        gsap.fromTo(
+          spread,
+          { y: 40, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.9,
+            ease: "power3.out",
+            scrollTrigger: { trigger: spread, start: "top 85%" },
+          }
+        );
+      });
+    }, rootRef);
+    return () => ctx.revert();
+  }, [showAll]);
+
   return (
     <section id="projects" ref={rootRef} className="px-6 py-28 sm:px-12">
       <div className="mx-auto max-w-6xl">
@@ -938,11 +997,12 @@ export default function Projects() {
         </p>
 
         <div className="mt-20 flex flex-col gap-20">
-          {PROJECTS.map((project) => (
+          {visibleProjects.map((project, index) => (
             <article
               key={project.id}
               id={project.id}
               data-spread
+              data-spread-extra={index >= INITIAL_PROJECT_COUNT ? "" : undefined}
               style={{ scrollMarginTop: "6rem" }}
               className="project-card grid items-stretch overflow-hidden rounded-[2.5rem] border border-steel bg-card lg:grid-cols-2"
             >
@@ -1074,6 +1134,36 @@ export default function Projects() {
               </div>
             </article>
           ))}
+        </div>
+
+        <div
+          ref={toggleRef}
+          className="mt-20 flex scroll-mt-28 flex-col items-center gap-4"
+        >
+          <button
+            type="button"
+            onClick={toggleShowAll}
+            aria-expanded={showAll}
+            className="magnetic-btn group inline-flex items-center gap-3 rounded-full bg-signal px-8 py-4 font-grotesk text-sm font-bold uppercase tracking-wide text-on-signal shadow-lg shadow-signal/25"
+          >
+            {showAll ? "Fewer Projects" : "More Projects"}
+            {!showAll && (
+              <span className="rounded-full bg-on-signal/15 px-2 py-0.5 font-mono text-xs font-normal tracking-widest">
+                +{HIDDEN_PROJECTS.length}
+              </span>
+            )}
+            <ChevronDown
+              size={18}
+              className={`transition-transform duration-300 ${
+                showAll ? "rotate-180" : "group-hover:translate-y-1"
+              }`}
+            />
+          </button>
+          {!showAll && (
+            <p className="text-center font-mono text-[0.65rem] tracking-widest text-muted">
+              {HIDDEN_PROJECTS.map((p) => p.title.toUpperCase()).join("  ·  ")}
+            </p>
+          )}
         </div>
       </div>
 
