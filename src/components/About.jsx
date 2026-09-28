@@ -91,7 +91,7 @@ export default function About() {
             </h2>
           </div>
           <p data-about className="max-w-xl font-sans text-muted">
-            Rising sophomore at Duke University studying Mechanical Engineering
+            Sophomore at Duke University studying Mechanical Engineering
             with a Certificate in Aerospace Engineering. I work across the full
             engineering stack — from CAD and FEA in SolidWorks to firmware in
             Arduino and full-stack mobile apps in SwiftUI. Currently racing with
