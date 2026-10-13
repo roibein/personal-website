@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { Mail, Phone, Linkedin, MapPin } from "lucide-react";
+import { Mail, Linkedin, MapPin } from "lucide-react";
 import MagneticButton from "./MagneticButton.jsx";
 
 const RESUME_URL = "/resume.pdf";
@@ -46,12 +46,6 @@ export default function Contact() {
       value: "rb505@duke.edu",
       onClick: copyEmail,
       hint: "Click to copy",
-    },
-    {
-      icon: Phone,
-      label: "PHONE",
-      value: "+1 (864) 650-7422",
-      href: "tel:+18646507422",
     },
     {
       icon: Linkedin,

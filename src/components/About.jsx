@@ -1,5 +1,26 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+
+const SLIDES = [
+  {
+    src: "/hero/hero-1-knee-brace-team.jpg",
+    alt: "Roi and his teammates presenting the Aquatic Knee Stabilizer at the Duke design showcase",
+  },
+  {
+    src: "/hero/hero-2-pulse-presentation.jpg",
+    alt: "Roi presenting the Pulse research app to a visitor in front of a large display",
+  },
+  {
+    src: "/hero/hero-3-bobsled-team.jpg",
+    alt: "Roi and his teammates presenting the Bobsled Bonanza toy at the design showcase",
+  },
+  {
+    src: "/hero/hero-4-michelin.jpg",
+    alt: "Roi standing next to a Michelin Man statue",
+  },
+];
+
+const SLIDE_MS = 6000;
 
 const STATS = [
   { value: 3.96, label: "GPA", decimals: 2 },
@@ -19,6 +40,31 @@ const CREDENTIALS = [
 
 export default function About() {
   const rootRef = useRef(null);
+  const slideshowRef = useRef(null);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [slideshowInView, setSlideshowInView] = useState(false);
+
+  useEffect(() => {
+    const el = slideshowRef.current;
+    if (!el) return undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => setSlideshowInView(entry.isIntersecting),
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!slideshowInView) return undefined;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
+      return undefined;
+    const id = setTimeout(
+      () => setActiveSlide((i) => (i + 1) % SLIDES.length),
+      SLIDE_MS
+    );
+    return () => clearTimeout(id);
+  }, [activeSlide, slideshowInView]);
 
   useEffect(() => {
     const reduced = window.matchMedia(
@@ -118,22 +164,39 @@ export default function About() {
           </div>
         </div>
 
-        {/* Portrait + Credentials */}
+        {/* Photo slideshow + Credentials */}
         <div className="flex flex-col gap-8 self-start">
           <figure
+            ref={slideshowRef}
             data-about
-            className="relative overflow-hidden rounded-[1.5rem] border border-steel bg-iron"
+            className="relative aspect-[4/3] overflow-hidden rounded-[1.5rem] border border-steel bg-inset"
           >
-            <img
-              src="/headshot.jpg"
-              alt="Roi Bein, photographed beneath the Gothic archways of Duke University"
-              loading="lazy"
-              className="aspect-[4/3] w-full object-cover object-[center_30%]"
-            />
-            <figcaption className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 bg-gradient-to-t from-void/90 via-void/40 to-transparent px-4 pb-3 pt-12 font-mono text-[0.6rem] tracking-widest">
-              <span className="text-signal">ROI BEIN</span>
-              <span className="text-ghost/70">DURHAM, NC</span>
-            </figcaption>
+            {SLIDES.map((slide, i) => (
+              <img
+                key={slide.src}
+                src={slide.src}
+                alt={i === activeSlide ? slide.alt : ""}
+                aria-hidden={i === activeSlide ? undefined : "true"}
+                loading="lazy"
+                decoding="async"
+                className={`photo-slide absolute inset-0 h-full w-full object-contain object-center p-1 sm:p-2 ${
+                  i === activeSlide ? "is-active" : ""
+                }`}
+              />
+            ))}
+            <div className="absolute bottom-3 right-3 z-10 flex gap-1.5">
+              {SLIDES.map((slide, i) => (
+                <button
+                  key={slide.src}
+                  type="button"
+                  onClick={() => setActiveSlide(i)}
+                  aria-label={`Show photo ${i + 1}`}
+                  className={`h-1.5 rounded-full transition-all ${
+                    i === activeSlide ? "w-5 bg-signal" : "w-1.5 bg-white/70 hover:bg-white"
+                  }`}
+                />
+              ))}
+            </div>
           </figure>
 
           <div data-about className="flex flex-col">

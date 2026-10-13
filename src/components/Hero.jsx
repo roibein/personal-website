@@ -2,9 +2,6 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import MagneticButton from "./MagneticButton.jsx";
 
-const HERO_IMG =
-  "https://images.unsplash.com/photo-1657379224967-c1fb6ace4f70?q=80&w=2400&auto=format&fit=crop";
-
 export default function Hero() {
   const rootRef = useRef(null);
 
@@ -32,61 +29,62 @@ export default function Hero() {
     <section
       id="hero"
       ref={rootRef}
-      className="relative flex h-[100dvh] flex-col justify-end overflow-hidden"
+      className="relative flex min-h-[100dvh] flex-col justify-end overflow-hidden"
     >
-      <img
-        src={HERO_IMG}
-        alt="Le Mans endurance prototype racing on track at speed"
-        className="absolute inset-0 h-full w-full object-cover"
-      />
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            "linear-gradient(to top, var(--void) 30%, transparent 100%)",
-        }}
-      />
       <div className="scan-line" aria-hidden="true" />
 
-      <div className="relative z-10 flex flex-col items-start gap-5 px-6 pb-16 sm:pl-12">
-        <p
-          data-hero
-          className="inline-flex rounded-full border border-steel bg-void/65 px-4 py-2 font-mono text-[0.65rem] tracking-widest text-signal backdrop-blur sm:text-xs"
-        >
-          MECHANICAL ENGINEERING — DUKE UNIVERSITY — CLASS OF '29
-        </p>
-
-        <h1
-          data-hero
-          className="font-grotesk text-[clamp(3.5rem,12vw,10rem)] font-bold leading-[0.95] tracking-tightest text-ghost"
-        >
-          Roi Bein
-        </h1>
-
-        <span
-          data-hero
-          className="inline-flex items-center gap-2.5 rounded-full border border-steel bg-void/40 px-4 py-2 font-mono text-[0.6rem] tracking-widest text-ghost/90 backdrop-blur sm:text-[0.65rem]"
-        >
-          <span className="status-dot" aria-hidden="true" />
-          OPEN TO INTERNSHIPS — AVAILABLE ANYWHERE
-        </span>
-
-        <div data-hero className="mt-3 flex flex-wrap gap-4">
-          <MagneticButton href="#projects" variant="signal">
-            See My Work
-          </MagneticButton>
-          <MagneticButton
-            href="/resume.pdf"
-            target="_blank"
-            rel="noreferrer"
-            variant="ghost"
+      <div className="relative z-10 flex w-full flex-col gap-10 px-6 pb-16 pt-32 sm:px-12 lg:flex-row lg:items-end lg:justify-between">
+        <div className="flex flex-col items-start gap-5">
+          <p
+            data-hero
+            className="inline-flex rounded-full border border-steel bg-void/65 px-4 py-2 font-mono text-[0.65rem] tracking-widest text-signal backdrop-blur sm:text-xs"
           >
-            View Resume
-          </MagneticButton>
-          <MagneticButton href="#contact" variant="ghost">
-            Get In Touch
-          </MagneticButton>
+            MECHANICAL ENGINEERING — DUKE UNIVERSITY — CLASS OF '29
+          </p>
+
+          <h1
+            data-hero
+            className="font-grotesk text-[clamp(3.5rem,12vw,10rem)] font-bold leading-[0.95] tracking-tightest text-ghost"
+          >
+            Roi Bein
+          </h1>
+
+          <span
+            data-hero
+            className="inline-flex items-center gap-2.5 rounded-full border border-steel bg-void/40 px-4 py-2 font-mono text-[0.6rem] tracking-widest text-ghost/90 backdrop-blur sm:text-[0.65rem]"
+          >
+            <span className="status-dot" aria-hidden="true" />
+            OPEN TO INTERNSHIPS — AVAILABLE ANYWHERE
+          </span>
+
+          <div data-hero className="mt-3 flex flex-wrap gap-4">
+            <MagneticButton href="#projects" variant="signal">
+              See My Work
+            </MagneticButton>
+            <MagneticButton
+              href="/resume.pdf"
+              target="_blank"
+              rel="noreferrer"
+              variant="ghost"
+            >
+              View Resume
+            </MagneticButton>
+            <MagneticButton href="#contact" variant="ghost">
+              Get In Touch
+            </MagneticButton>
+          </div>
         </div>
+
+        <figure
+          data-hero
+          className="order-first w-[min(60vw,14rem)] shrink-0 rounded-[1.75rem] bg-white p-3 shadow-2xl shadow-black/30 sm:w-64 lg:order-none lg:w-[22rem]"
+        >
+          <img
+            src="/headshot.jpg"
+            alt="Roi Bein, photographed beneath the Gothic archways of Duke University"
+            className="aspect-[4/5] w-full rounded-[1.25rem] object-cover object-[50%_30%]"
+          />
+        </figure>
       </div>
     </section>
   );

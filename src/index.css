@@ -152,6 +152,22 @@ body::after {
   }
 }
 
+.photo-slide {
+  opacity: 0;
+  transition: opacity 1200ms ease;
+}
+
+.photo-slide.is-active {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-slide {
+    transform: none;
+    transition: none;
+  }
+}
+
 .scan-line {
   position: absolute;
   left: 0;
