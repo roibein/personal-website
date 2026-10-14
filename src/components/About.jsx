@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const SLIDES = [
   {
@@ -65,6 +66,10 @@ export default function About() {
     );
     return () => clearTimeout(id);
   }, [activeSlide, slideshowInView]);
+
+  const goToSlide = (index) => {
+    setActiveSlide((index + SLIDES.length) % SLIDES.length);
+  };
 
   useEffect(() => {
     const reduced = window.matchMedia(
@@ -184,12 +189,28 @@ export default function About() {
                 }`}
               />
             ))}
+            <button
+              type="button"
+              onClick={() => goToSlide(activeSlide - 1)}
+              aria-label="Previous photo"
+              className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-steel bg-void/60 p-2 text-ghost backdrop-blur transition-colors hover:bg-void hover:text-signal"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            <button
+              type="button"
+              onClick={() => goToSlide(activeSlide + 1)}
+              aria-label="Next photo"
+              className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-steel bg-void/60 p-2 text-ghost backdrop-blur transition-colors hover:bg-void hover:text-signal"
+            >
+              <ChevronRight size={18} />
+            </button>
             <div className="absolute bottom-3 right-3 z-10 flex gap-1.5">
               {SLIDES.map((slide, i) => (
                 <button
                   key={slide.src}
                   type="button"
-                  onClick={() => setActiveSlide(i)}
+                  onClick={() => goToSlide(i)}
                   aria-label={`Show photo ${i + 1}`}
                   className={`h-1.5 rounded-full transition-all ${
                     i === activeSlide ? "w-5 bg-signal" : "w-1.5 bg-white/70 hover:bg-white"
