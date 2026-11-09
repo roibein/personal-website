@@ -76,18 +76,7 @@ export default function About() {
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    if (reduced) {
-      // Skip motion, but still resolve the count-up stats to their final values.
-      rootRef.current
-        ?.querySelectorAll("[data-counter]")
-        .forEach((el) => {
-          const target = parseFloat(el.dataset.counter);
-          const decimals = parseInt(el.dataset.decimals, 10);
-          const suffix = el.dataset.suffix || "";
-          el.textContent = target.toFixed(decimals) + suffix;
-        });
-      return undefined;
-    }
+    if (reduced) return undefined;
 
     const ctx = gsap.context(() => {
       gsap.fromTo(
@@ -103,21 +92,6 @@ export default function About() {
         }
       );
 
-      gsap.utils.toArray("[data-counter]").forEach((el) => {
-        const target = parseFloat(el.dataset.counter);
-        const decimals = parseInt(el.dataset.decimals, 10);
-        const suffix = el.dataset.suffix || "";
-        const obj = { v: 0 };
-        gsap.to(obj, {
-          v: target,
-          duration: 1.2,
-          ease: "power3.out",
-          scrollTrigger: { trigger: el, start: "top 80%" },
-          onUpdate: () => {
-            el.textContent = obj.v.toFixed(decimals) + suffix;
-          },
-        });
-      });
     }, rootRef);
     return () => ctx.revert();
   }, []);
@@ -155,13 +129,9 @@ export default function About() {
                 key={stat.label}
                 className="skill-pill inline-flex items-baseline gap-2 rounded-full border border-steel bg-iron px-4 py-2 font-mono text-xs"
               >
-                <span
-                  className="font-bold text-signal"
-                  data-counter={stat.value}
-                  data-decimals={stat.decimals}
-                  data-suffix={stat.suffix || ""}
-                >
-                  0
+                <span className="font-bold text-signal">
+                  {stat.value.toFixed(stat.decimals)}
+                  {stat.suffix || ""}
                 </span>
                 <span className="text-muted">{stat.label}</span>
               </span>
