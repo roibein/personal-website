@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import { PROJECTS } from "../data/projects.js";
 import { EMAIL, LINKEDIN_URL, RESUME_URL } from "../data/site.js";
+import ProjectMarquee from "./ProjectMarquee.jsx";
 
 const HIDDEN_FROM_STRIP = new Set(["cd-display-case", "robocop-helmet"]);
 
@@ -111,37 +112,8 @@ export default function Hero() {
           ))}
         </dl>
 
-        <div
-          className="project-marquee mt-8 border-t border-line pt-6 sm:mt-10"
-          aria-label="Project highlights"
-        >
-          <div className="project-marquee-track">
-            {[0, 1].map((copy) => (
-              <ul key={copy} className="flex gap-3 pr-3" aria-hidden={copy === 1 || undefined}>
-                {PROJECT_PREVIEWS.map((project) => (
-                  <li key={`${copy}-${project.id}`} className="h-36 w-56 shrink-0 sm:h-44 sm:w-72">
-                    <a
-                      href={`#${project.id}`}
-                      aria-label={project.title}
-                      tabIndex={copy === 1 ? -1 : undefined}
-                      className="block h-full w-full overflow-hidden rounded-md border border-line bg-well"
-                    >
-                      <img
-                        src={project.src}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                        className={`h-full w-full ${
-                          project.fit === "contain" ? "object-contain p-2" : "object-cover"
-                        }`}
-                        style={project.position ? { objectPosition: project.position } : undefined}
-                      />
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            ))}
-          </div>
+        <div className="mt-8 border-t border-line pt-6 sm:mt-10">
+          <ProjectMarquee projects={PROJECT_PREVIEWS} />
         </div>
       </div>
     </section>

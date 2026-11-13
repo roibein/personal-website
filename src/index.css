@@ -141,29 +141,22 @@
   top: 1rem;
 }
 
-/* Hero project strip: two identical rows, slid left until the copy takes over. */
-.project-marquee {
-  overflow: hidden;
+/* Hero project strip: JS-driven scroll with hover deceleration (see ProjectMarquee). */
+.project-marquee-viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.project-marquee-viewport::-webkit-scrollbar {
+  display: none;
 }
 
 .project-marquee-track {
   display: flex;
   width: max-content;
-  animation: project-marquee 36s linear infinite;
-}
-
-.project-marquee:hover .project-marquee-track,
-.project-marquee:focus-within .project-marquee-track {
-  animation-play-state: paused;
-}
-
-@keyframes project-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
 }
 
 /* Carousel cross-fade. */
