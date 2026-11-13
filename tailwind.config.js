@@ -3,28 +3,23 @@ export default {
   content: ["./index.html", "./src/**/*.{js,jsx}"],
   theme: {
     extend: {
+      // Colours are RGB triplets defined in src/index.css so the light/dark
+      // themes swap in one place and alpha modifiers (bg-paper/80) work.
       colors: {
-        void: "rgb(var(--void-rgb) / <alpha-value>)",
-        iron: "rgb(var(--iron-rgb) / <alpha-value>)",
-        card: "rgb(var(--card-rgb) / <alpha-value>)",
-        inset: "rgb(var(--inset-rgb) / <alpha-value>)",
-        steel: "rgb(var(--steel-rgb) / <alpha-value>)",
-        signal: "rgb(var(--signal-rgb) / <alpha-value>)",
-        ghost: "rgb(var(--ghost-rgb) / <alpha-value>)",
-        muted: "rgb(var(--muted-rgb) / <alpha-value>)",
-        "on-signal": "rgb(var(--on-signal-rgb) / <alpha-value>)",
+        paper: "rgb(var(--paper) / <alpha-value>)",
+        surface: "rgb(var(--surface) / <alpha-value>)",
+        well: "rgb(var(--well) / <alpha-value>)",
+        line: "rgb(var(--line) / <alpha-value>)",
+        ink: "rgb(var(--ink) / <alpha-value>)",
+        muted: "rgb(var(--muted) / <alpha-value>)",
+        accent: "rgb(var(--accent) / <alpha-value>)",
+        "accent-strong": "rgb(var(--accent-strong) / <alpha-value>)",
+        "on-accent": "rgb(var(--on-accent) / <alpha-value>)",
       },
       fontFamily: {
-        grotesk: ['"Space Grotesk"', "sans-serif"],
-        display: ['"DM Serif Display"', "serif"],
-        mono: ['"Space Mono"', "monospace"],
-        sans: ["Inter", "sans-serif"],
-      },
-      letterSpacing: {
-        tightest: "-0.03em",
-      },
-      transitionTimingFunction: {
-        magnetic: "cubic-bezier(0.25, 0.46, 0.45, 0.94)",
+        display: ['"Space Grotesk"', "system-ui", "sans-serif"],
+        sans: ["Inter", "system-ui", "sans-serif"],
+        mono: ['"IBM Plex Mono"', "ui-monospace", "monospace"],
       },
     },
   },

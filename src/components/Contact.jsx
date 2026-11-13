@@ -1,162 +1,81 @@
-import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { Mail, Linkedin, MapPin } from "lucide-react";
-import MagneticButton from "./MagneticButton.jsx";
+import { useRef, useState } from "react";
+import { Check, Copy, FileText, Linkedin, Mail, MapPin } from "lucide-react";
+import { EMAIL, LINKEDIN_LABEL, LINKEDIN_URL, RESUME_URL } from "../data/site.js";
 
-const RESUME_URL = "/resume.pdf";
+function Row({ icon: Icon, label, children }) {
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2 border-t border-line py-5">
+      <dt className="label flex items-center gap-3">
+        <Icon size={18} aria-hidden="true" className="text-accent" />
+        {label}
+      </dt>
+      <dd className="flex flex-wrap items-center gap-3 text-base text-ink">{children}</dd>
+    </div>
+  );
+}
 
 export default function Contact() {
-  const rootRef = useRef(null);
-  const [toast, setToast] = useState(false);
-
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-      return undefined;
-    const ctx = gsap.context(() => {
-      gsap.fromTo(
-        "[data-contact]",
-        { y: 40, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: "power3.out",
-          stagger: 0.12,
-          scrollTrigger: { trigger: rootRef.current, start: "top 80%" },
-        }
-      );
-    }, rootRef);
-    return () => ctx.revert();
-  }, []);
+  const [copied, setCopied] = useState(false);
+  const timer = useRef(null);
 
   const copyEmail = async () => {
     try {
-      await navigator.clipboard.writeText("rb505@duke.edu");
-      setToast(true);
-      setTimeout(() => setToast(false), 2200);
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+      clearTimeout(timer.current);
+      timer.current = setTimeout(() => setCopied(false), 2200);
     } catch {
-      window.location.href = "mailto:rb505@duke.edu";
+      // Clipboard blocked — fall back to opening the mail client.
+      window.location.href = `mailto:${EMAIL}`;
     }
   };
 
-  const rows = [
-    {
-      icon: Mail,
-      label: "EMAIL",
-      value: "rb505@duke.edu",
-      onClick: copyEmail,
-      hint: "Click to copy",
-    },
-    {
-      icon: Linkedin,
-      label: "LINKEDIN",
-      value: "linkedin.com/in/roi-bein",
-      href: "https://www.linkedin.com/in/roi-bein/",
-      newTab: true,
-    },
-    {
-      icon: MapPin,
-      label: "LOCATION",
-      value: "Durham, NC",
-    },
-  ];
-
   return (
-    <section id="contact" ref={rootRef} className="bg-void px-6 py-32 sm:px-12">
-      <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-        <h2
-          data-contact
-          className="font-display italic text-[clamp(3rem,8vw,6rem)] leading-[1.05] text-ghost"
-        >
-          Let's build something.
-        </h2>
-        <p data-contact className="mt-6 max-w-xl font-grotesk text-muted">
-          Open to internship and research opportunities across mechanical
-          engineering — with a particular focus on automotive, aerospace, and
-          medtech.
-        </p>
-
-        <div data-contact className="mt-16 w-full text-left">
-          {rows.map((row) => {
-            const Icon = row.icon;
-            const content = (
-              <>
-                <span className="flex items-center gap-4">
-                  <Icon size={18} className="text-signal" aria-hidden="true" />
-                  <span className="font-mono text-[0.65rem] tracking-widest text-muted">
-                    {row.label}
-                  </span>
-                </span>
-                <span className="flex items-center gap-3">
-                  <span className="font-grotesk text-sm font-medium text-ghost">
-                    {row.value}
-                  </span>
-                  {row.hint && (
-                    <span className="hidden font-mono text-[0.6rem] text-muted sm:inline">
-                      {row.hint}
-                    </span>
-                  )}
-                </span>
-              </>
-            );
-            const rowClass =
-              "flex w-full items-center justify-between gap-4 border-b border-steel px-4 py-5 transition-colors duration-200 hover:bg-iron";
-
-            if (row.onClick) {
-              return (
-                <button
-                  key={row.label}
-                  type="button"
-                  onClick={row.onClick}
-                  className={`${rowClass} cursor-pointer text-left`}
-                >
-                  {content}
-                </button>
-              );
-            }
-            if (row.href) {
-              return (
-                <a
-                  key={row.label}
-                  href={row.href}
-                  target={row.newTab ? "_blank" : undefined}
-                  rel={row.newTab ? "noreferrer" : undefined}
-                  className={`${rowClass} cursor-pointer`}
-                >
-                  {content}
-                </a>
-              );
-            }
-            return (
-              <div key={row.label} className={rowClass}>
-                {content}
-              </div>
-            );
-          })}
+    <section id="contact" className="section" aria-labelledby="contact-title">
+      <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-12">
+        <div className="lg:col-span-5">
+          <h2 id="contact-title" className="section-title">
+            Let's build something.
+          </h2>
+          <p className="section-lead">
+            I'm open to internship and research opportunities in mechanical engineering,
+            especially in automotive, aerospace, and medtech.
+          </p>
         </div>
 
-        <div data-contact className="mt-14">
-          <MagneticButton
-            href={RESUME_URL}
-            target="_blank"
-            rel="noreferrer"
-            variant="signal"
-            className="px-10 py-4 text-base"
-          >
-            Download Resume
-          </MagneticButton>
-        </div>
-      </div>
-
-      {/* Copy toast */}
-      <div
-        role="status"
-        aria-live="polite"
-        className={`fixed bottom-8 left-1/2 z-[70] -translate-x-1/2 rounded-full border border-signal bg-iron px-6 py-3 font-mono text-xs text-signal transition-all duration-300 ${
-          toast ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
-        }`}
-      >
-        EMAIL COPIED TO CLIPBOARD
+        <dl className="border-b border-line lg:col-span-7">
+          <Row icon={Mail} label="Email">
+            <a href={`mailto:${EMAIL}`} className="link">
+              {EMAIL}
+            </a>
+            <button
+              type="button"
+              onClick={copyEmail}
+              className="btn btn-secondary min-h-[2.5rem] px-3 py-1.5"
+            >
+              {copied ? (
+                <Check size={15} aria-hidden="true" />
+              ) : (
+                <Copy size={15} aria-hidden="true" />
+              )}
+              <span aria-live="polite">{copied ? "Copied" : "Copy"}</span>
+              <span className="sr-only"> email address</span>
+            </button>
+          </Row>
+          <Row icon={Linkedin} label="LinkedIn">
+            <a href={LINKEDIN_URL} target="_blank" rel="noreferrer" className="link">
+              {LINKEDIN_LABEL}
+            </a>
+          </Row>
+          <Row icon={FileText} label="Resume">
+            <a href={RESUME_URL} target="_blank" rel="noreferrer" className="link">
+              View or download (PDF)
+            </a>
+          </Row>
+          <Row icon={MapPin} label="Location">
+            Durham, NC
+          </Row>
+        </dl>
       </div>
     </section>
   );

@@ -1,104 +1,101 @@
-import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 
 const prefersReducedMotion = () =>
   typeof window !== "undefined" &&
   window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /* ------------------------------------------------------------------ */
-/* Media carousel — every slide fits (object-contain) over a blurred   */
-/* backdrop of itself, so CAD renders and photos all sit cleanly.      */
+/* One gallery for the whole site: project photos, CAD renders, app    */
+/* screenshots, and the personal slideshows.                           */
+/*                                                                     */
+/* Every image is shown whole (object-contain) in a fixed-aspect       */
+/* frame, so mixed portrait/landscape sets never crop or shift layout. */
+/*                                                                     */
+/* items:      [{ src, alt, caption? }]                                */
+/* label:      accessible name, e.g. "Knee brace photos"               */
+/* thumbs:     show a thumbnail strip instead of dots                  */
+/* autoplayMs: 0 = manual only. Autoplay never starts under            */
+/*             prefers-reduced-motion and always has a pause button.   */
+/* keepPlayingOnNavigate: arrows don't stop autoplay (About slideshow) */
 /* ------------------------------------------------------------------ */
 export default function MediaCarousel({
   items,
-  splitLayout = false,
-  aspect = "aspect-[4/3] sm:aspect-[3/2]",
-  pad = "p-5 sm:p-8",
+  label,
+  aspect = "aspect-[4/3]",
+  thumbs = false,
+  autoplayMs = 0,
+  keepPlayingOnNavigate = false,
+  eager = false,
 }) {
-  const [index, setIndex] = useState(0);
-  const [autoplay, setAutoplay] = useState(true);
-  const [inView, setInView] = useState(false);
-  const containerRef = useRef(null);
-  const hasLooped = useRef(false);
   const count = items.length;
+  const captionId = useId();
+  const frameRef = useRef(null);
+  const [index, setIndex] = useState(0);
+  const [inView, setInView] = useState(false);
+  const [playing, setPlaying] = useState(
+    () => autoplayMs > 0 && count > 1 && !prefersReducedMotion()
+  );
 
-  // Only begin once the carousel is scrolled into view.
+  // Only advance while the gallery is actually on screen.
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return undefined;
+    const el = frameRef.current;
+    if (!el || !autoplayMs) return undefined;
     const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          setInView(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.35 }
+      ([entry]) => setInView(entry.isIntersecting),
+      { threshold: 0.4 }
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [autoplayMs]);
 
-  // Auto-advance every 3s, in view, until it stops or the visitor takes over.
-  // After the last slide, wrap back to the first slide for one final beat.
   useEffect(() => {
-    if (!autoplay || !inView || count <= 1 || prefersReducedMotion())
-      return undefined;
-    const id = setInterval(() => {
-      setIndex((i) => {
-        if (i >= count - 1) {
-          hasLooped.current = true;
-          return 0;
-        }
-        return i + 1;
-      });
-    }, 3000);
-    return () => clearInterval(id);
-  }, [autoplay, inView, count]);
-
-  // Once it has wrapped back to the first slide, stop and rest there.
-  useEffect(() => {
-    if (hasLooped.current && index === 0) setAutoplay(false);
-  }, [index]);
+    if (!playing || !inView) return undefined;
+    const id = setTimeout(() => setIndex((i) => (i + 1) % count), autoplayMs);
+    return () => clearTimeout(id);
+  }, [playing, inView, index, count, autoplayMs]);
 
   const goTo = (i) => {
-    setAutoplay(false);
+    if (!keepPlayingOnNavigate) setPlaying(false);
     setIndex((i + count) % count);
   };
 
+  const onKeyDown = (event) => {
+    if (count < 2) return;
+    if (event.key === "ArrowLeft") goTo(index - 1);
+    if (event.key === "ArrowRight") goTo(index + 1);
+  };
+
+  const active = items[index];
+  // Reserve two caption lines so the layout below doesn't jump between slides.
+  const captionSpace =
+    count > 1 && items.some((item) => item.caption) ? "min-h-[2.5rem]" : "";
+
   return (
-    <div
-      ref={containerRef}
-      className={`flex w-full flex-col bg-inset ${splitLayout ? "h-full min-h-0" : ""}`}
+    <figure
+      role="group"
+      aria-roledescription="carousel"
+      aria-label={label}
+      onKeyDown={onKeyDown}
+      className="flex w-full min-w-0 flex-col gap-3"
     >
-      {/* Fixed-aspect frame — or flex-fill when stacked above a diagram (65/35 split) */}
       <div
-        className={`relative w-full overflow-hidden ${
-          splitLayout ? "min-h-0 flex-1" : aspect
-        }`}
+        ref={frameRef}
+        className={`relative w-full overflow-hidden rounded-lg border border-line bg-well ${aspect}`}
       >
         {items.map((item, i) => (
-          <div
+          <img
             key={item.src}
-            className={`absolute inset-0 transition-opacity duration-500 ${
-              i === index ? "opacity-100" : "pointer-events-none opacity-0"
-            }`}
+            src={item.src}
+            alt={i === index ? item.alt : ""}
             aria-hidden={i === index ? undefined : true}
-          >
-            <img
-              src={item.src}
-              alt=""
-              aria-hidden="true"
-              className="absolute inset-0 h-full w-full scale-110 object-cover blur-2xl"
-            />
-            <div className="absolute inset-0 bg-void/40" />
-            <img
-              src={item.src}
-              alt={item.alt}
-              loading="lazy"
-              className={`absolute inset-0 h-full w-full object-contain ${pad}`}
-            />
-          </div>
+            aria-describedby={i === index && item.caption ? captionId : undefined}
+            loading={eager && i === 0 ? "eager" : "lazy"}
+            decoding="async"
+            className={`slide absolute inset-0 h-full w-full object-contain ${
+              i === index ? "is-active" : ""
+            }`}
+          />
         ))}
 
         {count > 1 && (
@@ -107,47 +104,99 @@ export default function MediaCarousel({
               type="button"
               onClick={() => goTo(index - 1)}
               aria-label="Previous image"
-              className="absolute left-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-steel bg-void/60 p-2 text-ghost backdrop-blur transition-colors hover:bg-void hover:text-signal"
+              className="icon-btn absolute left-2 top-1/2 -translate-y-1/2"
             >
-              <ChevronLeft size={18} />
+              <ChevronLeft size={20} aria-hidden="true" />
             </button>
             <button
               type="button"
               onClick={() => goTo(index + 1)}
               aria-label="Next image"
-              className="absolute right-3 top-1/2 z-10 -translate-y-1/2 rounded-full border border-steel bg-void/60 p-2 text-ghost backdrop-blur transition-colors hover:bg-void hover:text-signal"
+              className="icon-btn absolute right-2 top-1/2 -translate-y-1/2"
             >
-              <ChevronRight size={18} />
+              <ChevronRight size={20} aria-hidden="true" />
             </button>
-
-            <div className="absolute right-3 top-3 z-10 rounded-full bg-void/60 px-2.5 py-1 font-mono text-[0.6rem] tracking-widest text-ghost backdrop-blur">
-              {String(index + 1).padStart(2, "0")} / {String(count).padStart(2, "0")}
-            </div>
-
-            <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2">
-              {items.map((item, i) => (
-                <button
-                  key={item.src}
-                  type="button"
-                  onClick={() => goTo(i)}
-                  aria-label={`Go to image ${i + 1}`}
-                  className={`h-1.5 rounded-full transition-all ${
-                    i === index ? "w-5 bg-signal" : "w-1.5 bg-ghost/40 hover:bg-ghost/70"
-                  }`}
-                />
-              ))}
-            </div>
           </>
+        )}
+
+        {autoplayMs > 0 && count > 1 && (
+          <button
+            type="button"
+            onClick={() => setPlaying((p) => !p)}
+            aria-label={playing ? "Pause slideshow" : "Play slideshow"}
+            className="icon-btn absolute bottom-2 right-2"
+          >
+            {playing ? (
+              <Pause size={16} aria-hidden="true" />
+            ) : (
+              <Play size={16} aria-hidden="true" />
+            )}
+          </button>
         )}
       </div>
 
-      {items[index]?.caption && (
-        <div className="flex shrink-0 justify-center px-3 pb-3 pt-2.5">
-          <p className="rounded-full border border-steel/80 bg-iron/95 px-4 py-2 text-center font-mono text-[0.78rem] leading-snug tracking-wide text-ghost shadow-lg shadow-void/70 backdrop-blur-sm">
-            {items[index].caption}
-          </p>
-        </div>
-      )}
-    </div>
+      {/* Caption + position. Announced on manual navigation, silent while autoplaying. */}
+      <figcaption
+        id={captionId}
+        aria-live={playing ? "off" : "polite"}
+        className={`flex items-baseline justify-between gap-4 text-sm leading-5 text-muted ${captionSpace}`}
+      >
+        <span>{active.caption}</span>
+        {count > 1 && (
+          <span className="shrink-0 font-mono text-xs tabular-nums">
+            {index + 1} / {count}
+          </span>
+        )}
+      </figcaption>
+
+      {count > 1 &&
+        (thumbs ? (
+          <div className="-mx-1 flex gap-2 overflow-x-auto px-1 py-1 [scrollbar-width:thin]">
+            {items.map((item, i) => (
+              <button
+                key={item.src}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`Show image ${i + 1} of ${count}`}
+                aria-current={i === index ? "true" : undefined}
+                className={`h-14 w-14 shrink-0 overflow-hidden rounded-md border bg-well transition-opacity duration-150 ${
+                  i === index
+                    ? "border-accent opacity-100 ring-2 ring-accent"
+                    : "border-line opacity-70 hover:opacity-100"
+                }`}
+              >
+                <img
+                  src={item.src}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  className="h-full w-full object-cover"
+                />
+              </button>
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-wrap justify-center gap-1">
+            {items.map((item, i) => (
+              <button
+                key={item.src}
+                type="button"
+                onClick={() => goTo(i)}
+                aria-label={`Show image ${i + 1} of ${count}`}
+                aria-current={i === index ? "true" : undefined}
+                className="group flex h-8 w-8 items-center justify-center"
+              >
+                <span
+                  className={`block h-2 rounded-full transition-all duration-150 ${
+                    i === index
+                      ? "w-5 bg-accent"
+                      : "w-2 bg-muted/40 group-hover:bg-muted"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        ))}
+    </figure>
   );
 }

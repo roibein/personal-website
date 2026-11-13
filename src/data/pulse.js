@@ -1,5 +1,5 @@
-/* Screenshots of the Pulse research app, shared by the Experience entry
-   (Duke software engineering internship) and the Projects entry. */
+/* Screenshots and the long-form write-up for the Pulse research app
+   (Duke software engineering internship), used by the Projects section. */
 export const PULSE_MEDIA = [
   {
     type: "image",
@@ -97,16 +97,14 @@ export const PULSE_MEDIA = [
   },
 ];
 
-export const PULSE_WORK = {
-  kind: "app",
-  label: "PULSE FOR RESEARCH — THE ENGAGEMENT LAYER",
+export const PULSE_WRITEUP = {
   sections: [
     {
-      heading: "THE PROBLEM",
+      heading: "The problem",
       body: "Dr. Amanda Randles, principal investigator at the Duke Center for Computational and Digital Health Innovation, wants a shared database of health statistics that any researcher can draw from — so that no one has to recruit participants and clear IRB approval from scratch for every new study. The collection app already existed when I joined: users donate data from their wearables (Apple Watch, Fitbit, Oura Ring), and the app pulls it from Apple HealthKit and pushes it upstream. The failure mode was engagement. iOS terminates an app's background tasks once it sits unopened for roughly a week, so a participant who stops launching the app silently stops contributing data. Our team of four was tasked with building the layer that keeps them coming back, aimed squarely at Duke undergraduates.",
     },
     {
-      heading: "FOUR PILLARS OF ENGAGEMENT",
+      heading: "Four engagement features",
       items: [
         {
           name: "Fitness metrics",
@@ -127,11 +125,11 @@ export const PULSE_WORK = {
       ],
     },
     {
-      heading: "THE RETENTION LOOP",
+      heading: "The retention loop",
       body: "Two features tie the rest together. A Tamagotchi-style PulsePet gets healthier the more consistently you log in and visibly declines when a streak lapses, and a 34-badge trophy case rewards login streaks, hitting fitness goals for a run of days, and winning each game difficulty.",
     },
     {
-      heading: "MY CONTRIBUTION",
+      heading: "My contribution",
       body: "I owned the fitness, events, and games features end to end — from HealthKit queries and data aggregation through to the SwiftUI charts, class calendar, and game interfaces. On the social side I built the frontend for the leaderboard and photo-posting views and wrote the backend work behind the leaderboards. I also presented progress and the final deliverable to the research team, Duke OIT stakeholders, and colleagues.",
     },
   ],
@@ -144,5 +142,4 @@ export const PULSE_WORK = {
     "Duke Fitness API",
     "Git / GitLab",
   ],
-  media: PULSE_MEDIA,
 };

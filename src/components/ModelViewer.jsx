@@ -1,10 +1,18 @@
 import { useEffect, useState } from "react";
 
 /* ------------------------------------------------------------------ */
-/* Interactive glTF viewer — lazy-loads <model-viewer> so the ~300KB   */
-/* three.js payload stays out of the initial bundle until a model is   */
-/* actually opened. Drag to orbit, scroll/pinch to zoom.               */
+/* Interactive glTF viewer — lazy-loads <model-viewer> so the three.js */
+/* payload stays out of the initial bundle until a model is opened.    */
+/* Drag to orbit, scroll/pinch to zoom.                                */
 /* ------------------------------------------------------------------ */
+function Status({ children }) {
+  return (
+    <div className="flex h-full w-full items-center justify-center" role="status">
+      <span className="text-sm text-muted">{children}</span>
+    </div>
+  );
+}
+
 export default function ModelViewer({ src, alt, poster }) {
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -22,29 +30,11 @@ export default function ModelViewer({ src, alt, poster }) {
     };
   }, []);
 
-  if (failed) {
-    return (
-      <div className="flex h-full w-full items-center justify-center bg-void">
-        <span className="font-mono text-[0.65rem] tracking-widest text-muted">
-          3D VIEWER UNAVAILABLE
-        </span>
-      </div>
-    );
-  }
+  if (failed) return <Status>The 3D viewer couldn't load. Try the photos instead.</Status>;
+  if (!ready) return <Status>Loading 3D model…</Status>;
 
-  if (!ready) {
-    return (
-      <div className="flex h-full w-full items-center justify-center bg-void">
-        <span className="animate-pulse font-mono text-[0.65rem] tracking-widest text-muted">
-          LOADING 3D MODEL…
-        </span>
-      </div>
-    );
-  }
-
-  const rotateProps = reduced
-    ? {}
-    : { "auto-rotate": true, "auto-rotate-delay": 600 };
+  // No auto-rotation for visitors who prefer reduced motion.
+  const rotateProps = reduced ? {} : { "auto-rotate": true, "auto-rotate-delay": 600 };
 
   return (
     <model-viewer
